@@ -14,32 +14,36 @@ composer require twc/maker-bundle --dev
 
 ## Basic Usage
 
-### Configuration
-
-Structure concept 
+### Generic configuration
 
 ```yaml
 #config/packages/dev/twc_maker.yml
 componentName:
-    - { context: 'contextName', target: 'yourSpecificNamespace' }
-    - { context: 'contextName1', target: 'yourSpecificNamespace' }
+    - { context: 'contextName', target: 'Your\SpecificNamespace' }
+    - { context: 'contextName1', target: 'Your\SpecificNamespace' }
     - ...
 ```
+
+### Specific configuration
+
+#### Component entity
 
 for entity component you must use ***target_entity*** and ***target_repository*** instead ***target***
 
 ```yaml
 #config/packages/dev/twc_maker.yml
 entity:
-    - { context: 'contextName', target_entity: 'yourSpecificEntityNamespace', target_repository: 'yourSpecificRepositoryNamespace' }
+    - { context: 'contextName', target_entity: 'Your\SpecificEntityNamespace', target_repository: 'Your\SpecificRepositoryNamespace' }
 ```
+
+#### Component controller
 
 for controller you can specific ***dir*** to change generation folder (default contextName)
 
 ```yaml
 #config/packages/dev/twc_maker.yml
 controller:
-    - { context: 'contextName', target: 'yourSpecificNamespace', dir: 'my/custom/directory/template' }
+    - { context: 'contextName', target: 'Your\SpecificNamespace', dir: 'my/custom/directory/template' }
 ```
 
 ### Console
