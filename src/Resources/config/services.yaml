@@ -7,6 +7,7 @@ services:
       Twc\MakerBundle\Command\MakeTwcController:
         arguments:
           - '@Twc\MakerBundle\ContextGenerator'
+          - '@maker.file_manager'
         tags:
           - { name: 'maker.command'}
 
