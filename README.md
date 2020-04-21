@@ -18,10 +18,11 @@ composer require twc/maker-bundle --dev
 
 ```yaml
 #config/packages/dev/twc_maker.yml
-componentName:
-    - { context: 'contextName', target: 'Your\SpecificNamespace' }
-    - { context: 'contextName1', target: 'Your\SpecificNamespace' }
-    - ...
+twc_maker:
+    componentName:
+        - { context: 'contextName', target: 'Your\SpecificNamespace' }
+        - { context: 'contextName1', target: 'Your\SpecificNamespace' }
+        - ...
 ```
 
 ### Specific configuration
@@ -32,8 +33,9 @@ for entity component you must use ***target_entity*** and ***target_repository**
 
 ```yaml
 #config/packages/dev/twc_maker.yml
-entity:
-    - { context: 'contextName', target_entity: 'Your\SpecificEntityNamespace', target_repository: 'Your\SpecificRepositoryNamespace' }
+twc_maker:
+    entity:
+        - { context: 'contextName', target_entity: 'Your\SpecificEntityNamespace', target_repository: 'Your\SpecificRepositoryNamespace' }
 ```
 
 #### Component controller
@@ -42,8 +44,9 @@ for controller you can specific ***dir*** to change generation folder (default c
 
 ```yaml
 #config/packages/dev/twc_maker.yml
-controller:
-    - { context: 'contextName', target: 'Your\SpecificNamespace', dir: 'my/custom/directory/template' }
+twc_maker:
+    controller:
+        - { context: 'contextName', target: 'Your\SpecificNamespace', dir: 'my/custom/directory/template' }
 ```
 
 ### Console
@@ -54,9 +57,10 @@ TwcMakerBundle wrappe maker command and add new option ***--context*** (shortcut
 
 ```yaml
 #config/packages/dev/twc_maker.yml
-message:
-    - { context: 'post.command', target: 'App\Post\Application\Command' }
-    - { context: 'post.query', target: 'App\Post\Application\Query' }
+twc_maker:
+    message:
+        - { context: 'post.command', target: 'App\Post\Application\Command' }
+        - { context: 'post.query', target: 'App\Post\Application\Query' }
 ```
 
 in your console
@@ -86,12 +90,13 @@ created: src/Post/Application/Query/AllPostArchivedQueryHandler.php
 
 ```yaml
 #config/packages/dev/twc_maker.yml
-entity:
-    - { context: 'membership', target_entity: 'App\MemberShip\Domain\Entity', target_repository: 'App\MemberShip\Infrastructure\Doctrine\Repository' }
-controller:
-    - { context: 'membership', target: 'App\MemberShip\Presenter\Controller' }
-form:
-    - { context: 'membership', target: 'App\MemberShip\Presenter\Form' }
+twc_maker:
+    entity:
+        - { context: 'membership', target_entity: 'App\MemberShip\Domain\Entity', target_repository: 'App\MemberShip\Infrastructure\Doctrine\Repository' }
+    controller:
+        - { context: 'membership', target: 'App\MemberShip\Presenter\Controller' }
+    form:
+        - { context: 'membership', target: 'App\MemberShip\Presenter\Form' }
 ```
 
 in your console

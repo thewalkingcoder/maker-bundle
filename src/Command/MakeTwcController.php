@@ -14,6 +14,7 @@ namespace Twc\MakerBundle\Command;
 use Doctrine\Common\Annotations\Annotation;
 use Symfony\Bundle\MakerBundle\ConsoleStyle;
 use Symfony\Bundle\MakerBundle\DependencyBuilder;
+use Symfony\Bundle\MakerBundle\FileManager;
 use Symfony\Bundle\MakerBundle\Generator;
 use Symfony\Bundle\MakerBundle\InputConfiguration;
 use Symfony\Bundle\MakerBundle\Maker\AbstractMaker;
@@ -35,9 +36,18 @@ final class MakeTwcController extends AbstractMaker
      */
     private $contextGenerator;
 
-    public function __construct(ContextGenerator $contextGenerator)
+    /**
+     * @var FileManager
+     */
+    private $fileManager;
+
+    public function __construct(
+        ContextGenerator $contextGenerator,
+        FileManager $fileManager
+    )
     {
         $this->contextGenerator = $contextGenerator;
+        $this->fileManager = $fileManager;
     }
 
     public static function getCommandName(): string
@@ -80,6 +90,8 @@ final class MakeTwcController extends AbstractMaker
             $context
         );
         $templateName = $dirTemplate.'/index.html.twig';
+        $templateExist = file_exists($this->fileManager->getPathForTemplate($templateName));
+
         $controllerPath = $generator->generateController(
             $controllerClassNameDetails->getFullName(),
             'controller/Controller.tpl.php',
@@ -91,7 +103,7 @@ final class MakeTwcController extends AbstractMaker
             ]
         );
 
-        if ($this->isTwigInstalled() && !$noTemplate) {
+        if ($this->isTwigInstalled() && !$noTemplate && !$templateExist) {
             $generator->generateTemplate(
                 $templateName,
                 'controller/twig_template.tpl.php',
