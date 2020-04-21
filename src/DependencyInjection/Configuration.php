@@ -20,12 +20,11 @@ class Configuration implements ConfigurationInterface
             'messenger_middleware',
             'voter',
             'command',
-            'fixtures'
+            'fixtures',
         ];
 
         $children = $treeBuilder->getRootNode()->children();
-        foreach($components as $component){
-
+        foreach ($components as $component) {
             $children->arrayNode($component)
                        ->arrayPrototype()
                             ->children()
@@ -58,5 +57,4 @@ class Configuration implements ConfigurationInterface
 
         return $treeBuilder;
     }
-
 }

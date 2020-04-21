@@ -27,10 +27,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Twc\MakerBundle\ContextGenerator;
 use Twc\MakerBundle\Support;
 
-
 final class MakeTwcController extends AbstractMaker
 {
-
     /**
      * @var ContextGenerator
      */
@@ -44,8 +42,7 @@ final class MakeTwcController extends AbstractMaker
     public function __construct(
         ContextGenerator $contextGenerator,
         FileManager $fileManager
-    )
-    {
+    ) {
         $this->contextGenerator = $contextGenerator;
         $this->fileManager = $fileManager;
     }
@@ -89,7 +86,7 @@ final class MakeTwcController extends AbstractMaker
             $dirDefault,
             $context
         );
-        $templateName = $dirTemplate.'/index.html.twig';
+        $templateName = $dirTemplate . '/index.html.twig';
         $templateExist = file_exists($this->fileManager->getPathForTemplate($templateName));
 
         $controllerPath = $generator->generateController(

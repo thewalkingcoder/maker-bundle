@@ -2,21 +2,17 @@
 
 namespace Twc\MakerBundle\Command;
 
-use Symfony\Bundle\MakerBundle\Str;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Twc\MakerBundle\ContextGenerator;
 use Twc\MakerBundle\Support;
 
-
 class MakeForm extends Command
 {
-
     /**
      * @var ContextGenerator
      */
@@ -40,7 +36,6 @@ class MakeForm extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-
         $command = $this->getApplication()->find('make:form');
         $name = $input->getArgument('name');
         $boundClass = $input->getArgument('bound-class');
@@ -48,13 +43,13 @@ class MakeForm extends Command
 
         $namespaceContext = $this->contextGenerator->classNameByContext(
             Support::FORM,
-            str_replace('Type','', $name).'Type',
+            str_replace('Type', '', $name) . 'Type',
             $context
         );
 
         $arguments = [
-            'command'     => 'make:form',
-            'name'        => $namespaceContext,
+            'command' => 'make:form',
+            'name' => $namespaceContext,
             'bound-class' => $boundClass,
         ];
 

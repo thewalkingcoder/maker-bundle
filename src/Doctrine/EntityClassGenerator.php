@@ -17,7 +17,6 @@ use Symfony\Bundle\MakerBundle\Doctrine\DoctrineHelper;
 use Symfony\Bundle\MakerBundle\Generator;
 use Symfony\Bundle\MakerBundle\Util\ClassNameDetails;
 
-
 final class EntityClassGenerator
 {
     private $generator;
@@ -34,7 +33,6 @@ final class EntityClassGenerator
         ClassNameDetails $repoClassDetails,
         bool $apiResource, bool $withPasswordUpgrade = false): string
     {
-
         $tableName = $this->doctrineHelper->getPotentialTableName($entityClassDetails->getFullName());
 
         $entityPath = $this->generator->generateClass(

@@ -56,8 +56,7 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
         string $projectDirectory,
         Generator $generator = null,
         ContextGenerator $contextGenerator
-    )
-    {
+    ) {
         $this->fileManager = $fileManager;
         $this->doctrineHelper = $doctrineHelper;
         // $projectDirectory is unused, argument kept for BC
@@ -129,7 +128,6 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
 
     public function generate(InputInterface $input, ConsoleStyle $io, Generator $generator)
     {
-
         $overwrite = $input->getOption('overwrite');
 
         // the regenerate option has entirely custom behavior
@@ -155,12 +153,11 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
             'Entity\\'
         );
 
-
         $classExists = class_exists($entityClassDetails->getFullName());
         if (!$classExists) {
             $namespaceRepositoryContext = $this->contextGenerator->classNameByContext(
                 Support::ENTITY,
-                str_replace('Repository','', $name).'Repository',
+                str_replace('Repository', '', $name) . 'Repository',
                 $context,
                 'target_repository'
             );
@@ -424,7 +421,7 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
                 'float' => [],
             ],
             'relation' => [
-                'relation' => 'a '.$wizard.' will help you build the relation',
+                'relation' => 'a ' . $wizard . ' will help you build the relation',
                 EntityRelation::MANY_TO_ONE => [],
                 EntityRelation::ONE_TO_MANY => [],
                 EntityRelation::MANY_TO_MANY => [],
@@ -511,8 +508,8 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
             // in the Entity namespace versus just checking the full class
             // name to avoid issues with classes like "Directory" that exist
             // in PHP's core.
-            if (class_exists($this->getEntityNamespace().'\\'.$answeredEntityClass)) {
-                $targetEntityClass = $this->getEntityNamespace().'\\'.$answeredEntityClass;
+            if (class_exists($this->getEntityNamespace() . '\\' . $answeredEntityClass)) {
+                $targetEntityClass = $this->getEntityNamespace() . '\\' . $answeredEntityClass;
             } elseif (class_exists($answeredEntityClass)) {
                 $targetEntityClass = $answeredEntityClass;
             } else {
@@ -587,7 +584,7 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
             // recommend an inverse side, except for OneToOne, where it's inefficient
             $recommendMappingInverse = EntityRelation::ONE_TO_ONE !== $relation->getType();
 
-            $getterMethodName = 'get'.Str::asCamelCase(Str::getShortClassName($relation->getOwningClass()));
+            $getterMethodName = 'get' . Str::asCamelCase(Str::getShortClassName($relation->getOwningClass()));
             if (EntityRelation::ONE_TO_ONE !== $relation->getType()) {
                 // pluralize!
                 $getterMethodName = Str::singularCamelCaseToPluralCamelCase($getterMethodName);
@@ -723,7 +720,7 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
 
                 break;
             default:
-                throw new \InvalidArgumentException('Invalid type: '.$type);
+                throw new \InvalidArgumentException('Invalid type: ' . $type);
         }
 
         return $relation;
@@ -821,7 +818,7 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
     private function doesEntityUseAnnotationMapping(string $className): bool
     {
         if (!class_exists($className)) {
-            $otherClassMetadatas = $this->doctrineHelper->getMetadata(Str::getNamespace($className).'\\', true);
+            $otherClassMetadatas = $this->doctrineHelper->getMetadata(Str::getNamespace($className) . '\\', true);
 
             // if we have no metadata, we should assume this is the first class being mapped
             if (empty($otherClassMetadatas)) {

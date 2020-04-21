@@ -11,10 +11,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Twc\MakerBundle\ContextGenerator;
 use Twc\MakerBundle\Support;
 
-
 class MakeFixtures extends Command
 {
-
     /**
      * @var ContextGenerator
      */
@@ -37,7 +35,6 @@ class MakeFixtures extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-
         $command = $this->getApplication()->find('make:fixtures');
         $name = $input->getArgument('fixtures-class');
         $context = $input->getOption('context');
@@ -49,7 +46,7 @@ class MakeFixtures extends Command
         );
 
         $arguments = [
-            'command'        => 'make:fixtures',
+            'command' => 'make:fixtures',
             'fixtures-class' => $namespaceContext,
         ];
 

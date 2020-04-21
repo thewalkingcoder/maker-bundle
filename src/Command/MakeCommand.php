@@ -9,14 +9,11 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Twc\MakerBundle\ContextGenerator;
 use Twc\MakerBundle\Support;
 
-
 class MakeCommand extends Command
 {
-
     /**
      * @var ContextGenerator
      */
@@ -39,7 +36,6 @@ class MakeCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-
         $command = $this->getApplication()->find('make:command');
         $name = $input->getArgument('name');
         $context = $input->getOption('context');
@@ -51,8 +47,8 @@ class MakeCommand extends Command
         );
 
         $arguments = [
-            'command'     => 'make:command',
-            'name'        => $namespaceContext,
+            'command' => 'make:command',
+            'name' => $namespaceContext,
         ];
 
         $greetInput = new ArrayInput($arguments);

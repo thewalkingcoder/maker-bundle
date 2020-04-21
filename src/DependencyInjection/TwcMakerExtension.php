@@ -10,7 +10,6 @@ use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Twc\MakerBundle\ContextGenerator;
 
-
 class TwcMakerExtension extends Extension
 {
     public function load(array $configs, ContainerBuilder $container)
@@ -22,6 +21,5 @@ class TwcMakerExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
         $definition = $container->getDefinition(ContextGenerator::class);
         $definition->replaceArgument(0, $config);
-
     }
 }

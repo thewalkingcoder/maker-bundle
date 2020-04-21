@@ -8,14 +8,11 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Twc\MakerBundle\ContextGenerator;
 use Twc\MakerBundle\Support;
 
-
 class MakeValidator extends Command
 {
-
     /**
      * @var ContextGenerator
      */
@@ -38,7 +35,6 @@ class MakeValidator extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-
         $command = $this->getApplication()->find('make:validator');
         $name = $input->getArgument('name');
         $context = $input->getOption('context');
@@ -50,8 +46,8 @@ class MakeValidator extends Command
         );
 
         $arguments = [
-            'command'       => 'make:validator',
-            'name'          => $namespaceContext,
+            'command' => 'make:validator',
+            'name' => $namespaceContext,
         ];
 
         $greetInput = new ArrayInput($arguments);

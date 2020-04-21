@@ -4,12 +4,8 @@ declare(strict_types=1);
 
 namespace Twc\MakerBundle;
 
-use Symfony\Bundle\MakerBundle\Str;
-use Symfony\Bundle\MakerBundle\Util\ClassNameDetails;
-
 class ContextGenerator
 {
-
     /**
      * @var array
      */
@@ -32,7 +28,6 @@ class ContextGenerator
         }
 
         return '\\' . rtrim($namespace, '\\') . '\\' . $initialClassName;
-
     }
 
     public function getNamespace(string $component, ?string $context, string $target): ?string
@@ -46,7 +41,6 @@ class ContextGenerator
         }
 
         foreach ($this->configs[$component] as $param) {
-
             if ($param['context'] === $context) {
                 return $param[$target];
             }
@@ -57,13 +51,11 @@ class ContextGenerator
 
     public function getDirTemplateByContext(string $dirDefault, ?string $context)
     {
-
         if (empty($context)) {
             return $dirDefault;
         }
 
         foreach ($this->configs[Support::CONTROLLER] as $param) {
-
             if ($param['context'] === $context) {
                 return $this->getDirTemplate($param);
             }
