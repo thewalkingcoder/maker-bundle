@@ -1,0 +1,63 @@
+services:
+
+      Twc\MakerBundle\ContextGenerator:
+        arguments:
+          - ''
+
+      Twc\MakerBundle\Command\MakeTwcController:
+        arguments:
+          - '@Twc\MakerBundle\ContextGenerator'
+        tags:
+          - { name: 'maker.command'}
+
+      Twc\MakerBundle\Command\MakeValidator:
+        arguments:
+          - '@Twc\MakerBundle\ContextGenerator'
+        tags:
+          - { name: 'console.command', command: 'make:twc:validator' }
+
+      Twc\MakerBundle\Command\MakeForm:
+        arguments:
+          - '@Twc\MakerBundle\ContextGenerator'
+        tags:
+          - { name: 'console.command', command: 'make:twc:form' }
+
+      Twc\MakerBundle\Command\MakeMessage:
+        arguments:
+          - '@Twc\MakerBundle\ContextGenerator'
+        tags:
+          - { name: 'console.command', command: 'make:twc:message' }
+
+      Twc\MakerBundle\Command\MakeMessengerMiddleware:
+        arguments:
+          - '@Twc\MakerBundle\ContextGenerator'
+        tags:
+          - { name: 'console.command', command: 'make:twc:messenger-middleware' }
+
+      Twc\MakerBundle\Command\MakeVoter:
+        arguments:
+          - '@Twc\MakerBundle\ContextGenerator'
+        tags:
+          - { name: 'console.command', command: 'make:twc:voter' }
+
+      Twc\MakerBundle\Command\MakeCommand:
+        arguments:
+          - '@Twc\MakerBundle\ContextGenerator'
+        tags:
+          - { name: 'console.command', command: 'make:twc:command' }
+
+      Twc\MakerBundle\Command\MakeFixtures:
+        arguments:
+          - '@Twc\MakerBundle\ContextGenerator'
+        tags:
+          - { name: 'console.command', command: 'make:twc:fixtures' }
+
+      Twc\MakerBundle\Command\MakeTwcEntity:
+        arguments:
+          - '@maker.file_manager'
+          - '@maker.doctrine_helper'
+          - '%kernel.project_dir%'
+          - '@maker.generator'
+          - '@Twc\MakerBundle\ContextGenerator'
+        tags:
+          - { name: 'maker.command'}
