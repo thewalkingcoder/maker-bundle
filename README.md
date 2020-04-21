@@ -4,7 +4,7 @@
 
 When your symfony architecture is different like (ddd, cqrs, adr, custom architecture) you lost the powerfull of makerBundle,
 because directory structure is not at the same place.
-TwcMakerBundle try to revolve that, to wrapper maker command and introduce "context" option.
+TwcMakerBundle try to revolve that, to wrap maker command and introduce "context" option.
 
 ## Installation
 
@@ -51,7 +51,7 @@ twc_maker:
 
 ### Console
 
-TwcMakerBundle wrappe maker command and add new option ***--context*** (shortcut -c)
+TwcMakerBundle wrap maker command and add new option ***--context*** (shortcut -c)
 
 ### Sample with CQRS concept
 
@@ -114,7 +114,7 @@ created: src/Membership/Infrastructure/Doctrine/Repository/UserMemberShipReposit
 
 ## Support
 
-Actually TwcMakerBundle wrappe 9 components
+Actually TwcMakerBundle wrap 9 components
 
 | components |
 |------------|
