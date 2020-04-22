@@ -36,7 +36,7 @@ class TwcMakerKernel extends Kernel
             new MakerBundle(),
             new TwcMakerBundle(),
             new DoctrineBundle(),
-            new TwigBundle()
+            new TwigBundle(),
         ];
     }
 
@@ -63,11 +63,11 @@ class TwcMakerKernel extends Kernel
                 'auto_mapping' => true,
                 'mappings' => [
                     'App' => [
-                        'type'      => 'annotation',
-                        'dir'       => 'tests/Execute/Entity',
+                        'type' => 'annotation',
+                        'dir' => 'tests/Execute/Entity',
                         'is_bundle' => false,
-                        'prefix'    => 'Twc\MakerBundle\Tests\Execute\Entity',
-                        'alias'     => 'App',
+                        'prefix' => 'Twc\MakerBundle\Tests\Execute\Entity',
+                        'alias' => 'App',
                     ],
                 ],
             ],
@@ -78,7 +78,6 @@ class TwcMakerKernel extends Kernel
             'debug' => false,
             'strict_variables' => false,
             'exception_controller' => null,
-
         ]);
         $c->loadFromExtension('twc_maker', $this->configTwcMaker);
     }

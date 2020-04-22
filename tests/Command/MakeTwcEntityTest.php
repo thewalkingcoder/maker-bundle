@@ -14,21 +14,20 @@ class MakeTwcEntityTest extends TestCase
         $config = [
             'entity' => [
                 [
-                    'context'           => 'context.test',
-                    'target_entity'     => 'Twc\MakerBundle\Tests\Execute\Entity',
-                    'target_repository' => 'Twc\MakerBundle\Tests\Execute\Repository'
-                ]
-            ]
+                    'context' => 'context.test',
+                    'target_entity' => 'Twc\MakerBundle\Tests\Execute\Entity',
+                    'target_repository' => 'Twc\MakerBundle\Tests\Execute\Repository',
+                ],
+            ],
         ];
 
         $execute = [
-            'name'             => 'Post',
-            '--context'        => 'context.test',
+            'name' => 'Post',
+            '--context' => 'context.test',
         ];
 
         $this->execute('make:twc:entity', $config, $execute);
         $this->assertFileExists(__DIR__ . '/../Execute/Entity/Post.php');
         $this->assertFileExists(__DIR__ . '/../Execute/Repository/PostRepository.php');
     }
-
 }

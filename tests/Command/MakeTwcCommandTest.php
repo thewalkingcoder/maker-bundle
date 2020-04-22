@@ -13,17 +13,16 @@ class MakeTwcCommandTest extends TestCase
     {
         $config = [
             'command' => [
-                ['context' => 'context.test', 'target' => 'Twc\MakerBundle\Tests\Execute']
-            ]
+                ['context' => 'context.test', 'target' => 'Twc\MakerBundle\Tests\Execute'],
+            ],
         ];
 
         $execute = [
-            'name'      => 'PostCommand',
-            '--context' => 'context.test'
+            'name' => 'PostCommand',
+            '--context' => 'context.test',
         ];
 
         $this->execute('make:twc:command', $config, $execute);
         $this->assertFileExists(__DIR__ . '/../Execute/PostCommand.php');
     }
-
 }

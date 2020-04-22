@@ -11,7 +11,6 @@ class ContextGeneratorTest extends TestCase
 {
     public function testNamespaceWithoutContext()
     {
-
         $contextGenerator = new ContextGenerator([]);
 
         $this->assertNull($contextGenerator->getNamespace('', null, 'target'));
@@ -19,7 +18,6 @@ class ContextGeneratorTest extends TestCase
 
     public function testNamespaceWithoutConfig()
     {
-
         $contextGenerator = new ContextGenerator([]);
 
         $this->assertNull($contextGenerator->getNamespace('test', 'test', 'target'));
@@ -27,9 +25,8 @@ class ContextGeneratorTest extends TestCase
 
     public function testNamespaceWithoutComponentConfig()
     {
-
         $contextGenerator = new ContextGenerator([
-            ['context' => 'test1', 'target' => 'App']
+            ['context' => 'test1', 'target' => 'App'],
         ]);
 
         $this->assertNull($contextGenerator->getNamespace('test', 'test', 'target'));
@@ -37,13 +34,12 @@ class ContextGeneratorTest extends TestCase
 
     public function testNamespaceWithComponentConfig()
     {
-
         $contextGenerator = new ContextGenerator([
             'componentTest' => [
                 ['context' => 'test1', 'target' => 'App'],
                 ['context' => 'test2', 'target' => 'App'],
-                ['context' => 'test', 'target' => 'App\Test']
-            ]
+                ['context' => 'test', 'target' => 'App\Test'],
+            ],
         ]);
 
         $this->assertSame('App\Test', $contextGenerator->getNamespace('componentTest', 'test', 'target'));
@@ -52,34 +48,30 @@ class ContextGeneratorTest extends TestCase
 
     public function testNameByContextReturnInitialClass()
     {
-
         $contextGenerator = new ContextGenerator([]);
 
         $class = $contextGenerator->classNameByContext(
             'componentTest',
             'Home',
             'test'
-
         );
         $this->assertSame('Home', $class);
     }
 
     public function testNameByContextReturnClassContext()
     {
-
         $contextGenerator = new ContextGenerator([
             'componentTest' => [
                 ['context' => 'test1', 'target' => 'App'],
                 ['context' => 'test2', 'target' => 'App'],
-                ['context' => 'test', 'target' => 'App\Test']
-            ]
+                ['context' => 'test', 'target' => 'App\Test'],
+            ],
         ]);
 
         $class = $contextGenerator->classNameByContext(
             'componentTest',
             'Home',
             'test'
-
         );
         $this->assertSame('\App\Test\Home', $class);
     }
@@ -90,7 +82,7 @@ class ContextGeneratorTest extends TestCase
             'controller' => [
                 ['context' => 'test', 'target' => 'App', 'dir' => null],
                 ['context' => 'test1', 'target' => 'App'],
-            ]
+            ],
         ]);
         $default = 'app/default';
         $result = $contextGenerator->getDirTemplateByContext($default, null);
@@ -109,7 +101,7 @@ class ContextGeneratorTest extends TestCase
             'controller' => [
                 ['context' => 'test', 'target' => 'App'],
                 ['context' => 'test1', 'target' => 'App'],
-            ]
+            ],
         ]);
         $default = 'app/default';
 
@@ -123,12 +115,11 @@ class ContextGeneratorTest extends TestCase
             'controller' => [
                 ['context' => 'test', 'target' => 'App'],
                 ['context' => 'test1', 'target' => 'App', 'dir' => 'app/dir/'],
-            ]
+            ],
         ]);
         $default = 'app/default';
 
         $result = $contextGenerator->getDirTemplateByContext($default, 'test1');
         $this->assertSame('app/dir', $result);
     }
-
 }

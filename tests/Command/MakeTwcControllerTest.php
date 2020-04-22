@@ -15,20 +15,19 @@ class MakeTwcControllerTest extends TestCase
             'controller' => [
                 [
                     'context' => 'context.test',
-                    'target'  => 'Twc\MakerBundle\Tests\Execute',
-                    'dir'     => 'app'
-                ]
-            ]
+                    'target' => 'Twc\MakerBundle\Tests\Execute',
+                    'dir' => 'app',
+                ],
+            ],
         ];
 
         $execute = [
             'controller-class' => 'App',
-            '--context'        => 'context.test'
+            '--context' => 'context.test',
         ];
 
         $this->execute('make:twc:controller', $config, $execute);
         $this->assertFileExists(__DIR__ . '/../Execute/AppController.php');
         $this->assertFileExists(__DIR__ . '/../templates/app/index.html.twig');
     }
-
 }
