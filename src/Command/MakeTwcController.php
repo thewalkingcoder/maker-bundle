@@ -74,7 +74,7 @@ final class MakeTwcController extends AbstractMaker
         );
 
         $controllerClassNameDetails = $generator->createClassNameDetails(
-            str_replace('Controller', '', $namespaceContext) .'Controller',
+            str_replace('Controller', '', $namespaceContext) . 'Controller',
             'Controller\\',
             'Controller'
         );

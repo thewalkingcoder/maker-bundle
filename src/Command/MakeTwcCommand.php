@@ -52,6 +52,7 @@ class MakeTwcCommand extends Command
         ];
 
         $greetInput = new ArrayInput($arguments);
+        $greetInput->setInteractive(!$input->getOption('no-interaction'));
         $command->run($greetInput, $output);
 
         return 0;

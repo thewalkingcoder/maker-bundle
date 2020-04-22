@@ -2,6 +2,7 @@
 
 namespace Twc\MakerBundle\Tests;
 
+use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Bundle\MakerBundle\MakerBundle;
@@ -32,7 +33,8 @@ class TwcMakerKernel extends Kernel
         return [
             new FrameworkBundle(),
             new MakerBundle(),
-            new TwcMakerBundle()
+            new TwcMakerBundle(),
+            new DoctrineBundle()
         ];
     }
 
@@ -50,6 +52,22 @@ class TwcMakerKernel extends Kernel
             'secret' => 123,
             'router' => [
                 'utf8' => true,
+            ],
+        ]);
+
+        $c->loadFromExtension('doctrine', [
+            'dbal' => ['url' => 'mysql://db_user:db_password@127.0.0.1:3306/db_name?serverVersion=5.7'],
+            'orm' => [
+                'auto_mapping' => true,
+                'mappings' => [
+                    'App' => [
+                        'type'      => 'annotation',
+                        'dir'       => 'tests/Execute/Entity',
+                        'is_bundle' => false,
+                        'prefix'    => 'Twc\MakerBundle\Tests\Execute\Entity',
+                        'alias'     => 'App',
+                    ],
+                ],
             ],
         ]);
         $c->loadFromExtension('twc_maker', $this->configTwcMaker);

@@ -46,7 +46,6 @@ class MakeTwcForm extends Command
             str_replace('Type', '', $name) . 'Type',
             $context
         );
-
         $arguments = [
             'command' => 'make:form',
             'name' => $namespaceContext,
@@ -54,6 +53,7 @@ class MakeTwcForm extends Command
         ];
 
         $greetInput = new ArrayInput($arguments);
+        $greetInput->setInteractive(!$input->getOption('no-interaction'));
         $command->run($greetInput, $output);
 
         return 0;
