@@ -1,20 +1,22 @@
 {
   "name": "twc/maker-bundle",
-  "description": "Wrappe maker bundle to introduce context option",
+  "description": "Wrap maker bundle to introduce context option to change destination template",
   "type": "symfony-bundle",
   "license": "MIT",
   "require": {
     "php": "^7.2",
-    "symfony/framework-bundle": "^4.4|^5.0",
     "symfony/maker-bundle": "^1.0"
+
   },
   "require-dev": {
-    "phpunit/phpunit": "^7.0"
+    "phpunit/phpunit": "^7.0",
+    "symfony/security-core": "^5.0"
   },
   "autoload": {
     "psr-4": {
       "Twc\\MakerBundle\\": "src",
-      "\\Twc\\MakerBundle\\Tests\\": "tests"
+      "Twc\\MakerBundle\\Tests\\": "tests"
+
     }
   }
 }

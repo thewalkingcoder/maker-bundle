@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Twc\MakerBundle\ContextGenerator;
 use Twc\MakerBundle\Support;
 
-class MakeValidator extends Command
+class MakeTwcMessage extends Command
 {
     /**
      * @var ContextGenerator
@@ -27,26 +27,26 @@ class MakeValidator extends Command
     protected function configure()
     {
         $this
-            ->setDescription('Creates a new validator and constraint class')
-            ->addArgument('name', InputArgument::OPTIONAL, 'The name of the validator class (e.g. <fg=yellow>EnabledValidator</>)')
+            ->setDescription('Creates a new message and handler')
+            ->addArgument('name', InputArgument::OPTIONAL, 'The name of the message class')
             ->addOption('context', 'c', InputOption::VALUE_OPTIONAL, 'your context config to generate on your target')
             ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $command = $this->getApplication()->find('make:validator');
+        $command = $this->getApplication()->find('make:message');
         $name = $input->getArgument('name');
         $context = $input->getOption('context');
 
         $namespaceContext = $this->contextGenerator->classNameByContext(
-            Support::VALIDATOR,
-            str_replace('Validator', '', $name) . 'Validator',
+            Support::MESSAGE,
+            $name,
             $context
         );
 
         $arguments = [
-            'command' => 'make:validator',
+            'command' => 'make:message',
             'name' => $namespaceContext,
         ];
 

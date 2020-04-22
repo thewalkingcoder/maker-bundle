@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Twc\MakerBundle\ContextGenerator;
 use Twc\MakerBundle\Support;
 
-class MakeFixtures extends Command
+class MakeTwcFixtures extends Command
 {
     /**
      * @var ContextGenerator

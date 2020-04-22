@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Twc\MakerBundle\ContextGenerator;
 use Twc\MakerBundle\Support;
 
-class MakeMessage extends Command
+class MakeTwcVoter extends Command
 {
     /**
      * @var ContextGenerator
@@ -27,26 +27,26 @@ class MakeMessage extends Command
     protected function configure()
     {
         $this
-            ->setDescription('Creates a new message and handler')
-            ->addArgument('name', InputArgument::OPTIONAL, 'The name of the message class')
+            ->setDescription('Creates a new security voter class')
+            ->addArgument('name', InputArgument::OPTIONAL, 'The name of the security voter class (e.g. <fg=yellow>BlogPostVoter</>)')
             ->addOption('context', 'c', InputOption::VALUE_OPTIONAL, 'your context config to generate on your target')
-            ;
+        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $command = $this->getApplication()->find('make:message');
+        $command = $this->getApplication()->find('make:voter');
         $name = $input->getArgument('name');
         $context = $input->getOption('context');
 
         $namespaceContext = $this->contextGenerator->classNameByContext(
-            Support::MESSAGE,
-            $name,
+            Support::VOTER,
+            str_replace('Voter', '', $name) . 'Voter',
             $context
         );
 
         $arguments = [
-            'command' => 'make:message',
+            'command' => 'make:voter',
             'name' => $namespaceContext,
         ];
 

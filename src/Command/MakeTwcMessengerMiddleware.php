@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Twc\MakerBundle\ContextGenerator;
 use Twc\MakerBundle\Support;
 
-class MakeVoter extends Command
+class MakeTwcMessengerMiddleware extends Command
 {
     /**
      * @var ContextGenerator
@@ -27,26 +27,26 @@ class MakeVoter extends Command
     protected function configure()
     {
         $this
-            ->setDescription('Creates a new security voter class')
-            ->addArgument('name', InputArgument::OPTIONAL, 'The name of the security voter class (e.g. <fg=yellow>BlogPostVoter</>)')
+            ->setDescription('Creates a new messenger middleware')
+            ->addArgument('name', InputArgument::OPTIONAL, 'The name of the middleware class (e.g. <fg=yellow>CustomMiddleware</>)')
             ->addOption('context', 'c', InputOption::VALUE_OPTIONAL, 'your context config to generate on your target')
-        ;
+            ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $command = $this->getApplication()->find('make:voter');
+        $command = $this->getApplication()->find('make:messenger-middleware');
         $name = $input->getArgument('name');
         $context = $input->getOption('context');
 
         $namespaceContext = $this->contextGenerator->classNameByContext(
-            Support::VOTER,
-            str_replace('Voter', '', $name) . 'Voter',
+            Support::MESSENGER_MIDDLEWARE,
+            str_replace('Middleware', '', $name) . 'Middleware',
             $context
         );
 
         $arguments = [
-            'command' => 'make:voter',
+            'command' => 'make:messenger-middleware',
             'name' => $namespaceContext,
         ];
 

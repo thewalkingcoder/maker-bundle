@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Twc\MakerBundle\ContextGenerator;
 use Twc\MakerBundle\Support;
 
-class MakeCommand extends Command
+class MakeTwcCommand extends Command
 {
     /**
      * @var ContextGenerator

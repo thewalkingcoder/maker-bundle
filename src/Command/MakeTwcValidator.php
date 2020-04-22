@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Twc\MakerBundle\ContextGenerator;
 use Twc\MakerBundle\Support;
 
-class MakeMessengerMiddleware extends Command
+class MakeTwcValidator extends Command
 {
     /**
      * @var ContextGenerator
@@ -27,26 +27,26 @@ class MakeMessengerMiddleware extends Command
     protected function configure()
     {
         $this
-            ->setDescription('Creates a new messenger middleware')
-            ->addArgument('name', InputArgument::OPTIONAL, 'The name of the middleware class (e.g. <fg=yellow>CustomMiddleware</>)')
+            ->setDescription('Creates a new validator and constraint class')
+            ->addArgument('name', InputArgument::OPTIONAL, 'The name of the validator class (e.g. <fg=yellow>EnabledValidator</>)')
             ->addOption('context', 'c', InputOption::VALUE_OPTIONAL, 'your context config to generate on your target')
             ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $command = $this->getApplication()->find('make:messenger-middleware');
+        $command = $this->getApplication()->find('make:validator');
         $name = $input->getArgument('name');
         $context = $input->getOption('context');
 
         $namespaceContext = $this->contextGenerator->classNameByContext(
-            Support::MESSENGER_MIDDLEWARE,
-            str_replace('Middleware', '', $name) . 'Middleware',
+            Support::VALIDATOR,
+            str_replace('Validator', '', $name) . 'Validator',
             $context
         );
 
         $arguments = [
-            'command' => 'make:messenger-middleware',
+            'command' => 'make:validator',
             'name' => $namespaceContext,
         ];
 

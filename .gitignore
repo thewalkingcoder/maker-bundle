@@ -4,3 +4,4 @@ composer.lock
 .DS_Store
 **/.DS_Store
 .php_cs.cache
+var/
