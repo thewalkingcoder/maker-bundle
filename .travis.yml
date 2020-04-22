@@ -3,5 +3,5 @@ php:
   - '7.2'
 
 script:
-  - composer install
+  - COMPOSER_MEMORY_LIMIT=-1 composer install
   - vendor/bin/phpunit
