@@ -17,7 +17,7 @@ trait TwcConsoleTrait
         $command = $application->find($commandName);
 
         $commandTester = new CommandTester($command);
-        $commandTester->execute($executeOptions);
+        $commandTester->execute($executeOptions, ['interactive' => false]);
     }
 
     public function tearDown()
@@ -27,6 +27,7 @@ trait TwcConsoleTrait
         $finder->files()->name('*.php')->in(__DIR__ . '/Execute');
 
         $removeFiles[] = __DIR__ . '/../var';
+        $removeFiles[] = __DIR__ . '/templates';
         foreach ($finder as $file) {
             $removeFiles [] = $file->getRealPath();
         }

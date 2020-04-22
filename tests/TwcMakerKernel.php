@@ -6,6 +6,7 @@ use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Bundle\MakerBundle\MakerBundle;
+use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel;
@@ -34,7 +35,8 @@ class TwcMakerKernel extends Kernel
             new FrameworkBundle(),
             new MakerBundle(),
             new TwcMakerBundle(),
-            new DoctrineBundle()
+            new DoctrineBundle(),
+            new TwigBundle()
         ];
     }
 
@@ -69,6 +71,14 @@ class TwcMakerKernel extends Kernel
                     ],
                 ],
             ],
+        ]);
+
+        $c->loadFromExtension('twig', [
+            'default_path' => 'tests/templates',
+            'debug' => false,
+            'strict_variables' => false,
+            'exception_controller' => null,
+
         ]);
         $c->loadFromExtension('twc_maker', $this->configTwcMaker);
     }

@@ -129,7 +129,6 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
     public function generate(InputInterface $input, ConsoleStyle $io, Generator $generator)
     {
         $overwrite = $input->getOption('overwrite');
-
         // the regenerate option has entirely custom behavior
         if ($input->getOption('regenerate')) {
             $this->regenerateEntities($input->getArgument('name'), $overwrite, $generator);
@@ -176,6 +175,7 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
             );
 
             $generator->writeChanges();
+
         }
 
         if (!$this->doesEntityUseAnnotationMapping($entityClassDetails->getFullName())) {
@@ -200,6 +200,7 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
 
         $isFirstField = true;
         while (true) {
+
             $newField = $this->askForNextField($io, $currentFields, $entityClassDetails->getFullName(), $isFirstField);
             $isFirstField = false;
 
@@ -318,6 +319,7 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
         }
 
         $fieldName = $io->ask($questionText, null, function ($name) use ($fields) {
+
             // allow it to be empty
             if (!$name) {
                 return $name;
