@@ -19,7 +19,7 @@ class MakeTwcFixturesTest extends TestCase
 
         $execute = [
             'fixtures-class' => 'PostData',
-            '--context' => 'context.test',
+            '--context'      => 'context.test',
         ];
 
         $this->execute('make:twc:fixtures', $config, $execute);

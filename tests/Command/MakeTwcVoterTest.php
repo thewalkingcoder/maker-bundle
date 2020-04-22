@@ -18,7 +18,7 @@ class MakeTwcVoterTest extends TestCase
         ];
 
         $execute = [
-            'name' => 'Post',
+            'name'      => 'Post',
             '--context' => 'context.test',
         ];
 

@@ -18,7 +18,7 @@ class MakeTwcMessageTest extends TestCase
         ];
 
         $execute = [
-            'name' => 'CreateNewPost',
+            'name'      => 'CreateNewPost',
             '--context' => 'context.test',
         ];
 

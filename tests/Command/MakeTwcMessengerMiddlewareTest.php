@@ -18,7 +18,7 @@ class MakeTwcMessengerMiddlewareTest extends TestCase
         ];
 
         $execute = [
-            'name' => 'Notification',
+            'name'      => 'Notification',
             '--context' => 'context.test',
         ];
 

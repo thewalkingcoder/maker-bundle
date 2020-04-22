@@ -31,8 +31,9 @@ final class EntityClassGenerator
     public function generateEntityClass(
         ClassNameDetails $entityClassDetails,
         ClassNameDetails $repoClassDetails,
-        bool $apiResource, bool $withPasswordUpgrade = false): string
-    {
+        bool $apiResource,
+        bool $withPasswordUpgrade = false
+    ): string {
         $tableName = $this->doctrineHelper->getPotentialTableName($entityClassDetails->getFullName());
 
         $entityPath = $this->generator->generateClass(

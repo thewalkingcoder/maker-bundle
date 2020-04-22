@@ -18,7 +18,7 @@ class MakeTwcCommandTest extends TestCase
         ];
 
         $execute = [
-            'name' => 'PostCommand',
+            'name'      => 'PostCommand',
             '--context' => 'context.test',
         ];
 

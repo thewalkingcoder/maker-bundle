@@ -14,15 +14,15 @@ class MakeTwcEntityTest extends TestCase
         $config = [
             'entity' => [
                 [
-                    'context' => 'context.test',
-                    'target_entity' => 'Twc\MakerBundle\Tests\Execute\Entity',
+                    'context'           => 'context.test',
+                    'target_entity'     => 'Twc\MakerBundle\Tests\Execute\Entity',
                     'target_repository' => 'Twc\MakerBundle\Tests\Execute\Repository',
                 ],
             ],
         ];
 
         $execute = [
-            'name' => 'Post',
+            'name'      => 'Post',
             '--context' => 'context.test',
         ];
 

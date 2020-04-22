@@ -18,8 +18,8 @@ class MakeTwcFormTest extends TestCase
         ];
 
         $execute = [
-            'name' => 'Post',
-            '--context' => 'context.test',
+            'name'             => 'Post',
+            '--context'        => 'context.test',
             '--no-interaction' => true,
         ];
 

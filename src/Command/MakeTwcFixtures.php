@@ -28,8 +28,11 @@ class MakeTwcFixtures extends Command
     {
         $this
             ->setDescription('Creates a new class to load Doctrine fixtures')
-            ->addArgument('fixtures-class', InputArgument::OPTIONAL,
-                'The class name of the fixtures to create (e.g. <fg=yellow>AppFixtures</>)')
+            ->addArgument(
+                'fixtures-class',
+                InputArgument::OPTIONAL,
+                'The class name of the fixtures to create (e.g. <fg=yellow>AppFixtures</>)'
+            )
             ->addOption('context', 'c', InputOption::VALUE_OPTIONAL, 'your context config to generate on your target');
     }
 

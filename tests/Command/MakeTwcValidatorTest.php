@@ -18,7 +18,7 @@ class MakeTwcValidatorTest extends TestCase
         ];
 
         $execute = [
-            'name' => 'Post',
+            'name'      => 'Post',
             '--context' => 'context.test',
         ];
 
