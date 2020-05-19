@@ -32,7 +32,7 @@ twc_maker:
 for entity component you must use ***target_entity*** and ***target_repository*** instead ***target***
 
 ```yaml
-#config/packages/dev/twc_maker.yml
+#config/packages/dev/twc_maker.yaml
 twc_maker:
     entity:
         - { context: 'contextName', target_entity: 'Your\SpecificEntityNamespace', target_repository: 'Your\SpecificRepositoryNamespace' }
@@ -43,7 +43,7 @@ twc_maker:
 for controller you can specific ***dir*** to change generation folder (default contextName)
 
 ```yaml
-#config/packages/dev/twc_maker.yml
+#config/packages/dev/twc_maker.yaml
 twc_maker:
     controller:
         - { context: 'contextName', target: 'Your\SpecificNamespace', dir: 'my/custom/directory/template' }
@@ -56,7 +56,7 @@ TwcMakerBundle wrap maker command and add new option ***--context*** (shortcut -
 ### Sample with CQRS concept
 
 ```yaml
-#config/packages/dev/twc_maker.yml
+#config/packages/dev/twc_maker.yaml
 twc_maker:
     message:
         - { context: 'post.command', target: 'App\Post\Application\Command' }
@@ -89,7 +89,7 @@ created: src/Post/Application/Query/AllPostArchivedQueryHandler.php
 ### Sample with DDD concept
 
 ```yaml
-#config/packages/dev/twc_maker.yml
+#config/packages/dev/twc_maker.yaml
 twc_maker:
     entity:
         - { context: 'membership', target_entity: 'App\MemberShip\Domain\Entity', target_repository: 'App\MemberShip\Infrastructure\Doctrine\Repository' }
