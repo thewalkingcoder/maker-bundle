@@ -2,6 +2,7 @@
 
 namespace Twc\MakerBundle\Command;
 
+use Symfony\Bundle\MakerBundle\Str;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
@@ -44,7 +45,7 @@ class MakeTwcFixtures extends Command
 
         $namespaceContext = $this->contextGenerator->classNameByContext(
             Support::FIXTURES,
-            str_replace('Fixtures', '', $name) . 'Fixtures',
+            Str::addSuffix($name, 'Fixtures'),
             $context
         );
 

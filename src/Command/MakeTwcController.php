@@ -69,12 +69,12 @@ final class MakeTwcController extends AbstractMaker
 
         $namespaceContext = $this->contextGenerator->classNameByContext(
             Support::CONTROLLER,
-            $controllerClass,
+            Str::addSuffix($controllerClass, 'Controller'),
             $context
         );
 
         $controllerClassNameDetails = $generator->createClassNameDetails(
-            str_replace('Controller', '', $namespaceContext) . 'Controller',
+            $namespaceContext,
             'Controller\\',
             'Controller'
         );

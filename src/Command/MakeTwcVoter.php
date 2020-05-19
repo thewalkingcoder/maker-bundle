@@ -2,6 +2,7 @@
 
 namespace Twc\MakerBundle\Command;
 
+use Symfony\Bundle\MakerBundle\Str;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
@@ -41,7 +42,7 @@ class MakeTwcVoter extends Command
 
         $namespaceContext = $this->contextGenerator->classNameByContext(
             Support::VOTER,
-            str_replace('Voter', '', $name) . 'Voter',
+            Str::addSuffix($name, 'Voter'),
             $context
         );
 

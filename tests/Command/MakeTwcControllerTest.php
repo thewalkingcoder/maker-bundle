@@ -22,7 +22,7 @@ class MakeTwcControllerTest extends TestCase
         ];
 
         $execute = [
-            'controller-class' => 'App',
+            'controller-class' => 'AppController',
             '--context'        => 'context.test',
         ];
 

@@ -42,7 +42,7 @@ class MakeTwcCommand extends Command
 
         $namespaceContext = $this->contextGenerator->classNameByContext(
             Support::COMMAND,
-            str_replace('Command', '', $name) . 'Command',
+            Str::addSuffix($name, 'Command'),
             $context
         );
 

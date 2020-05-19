@@ -2,6 +2,7 @@
 
 namespace Twc\MakerBundle\Command;
 
+use Symfony\Bundle\MakerBundle\Str;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
@@ -43,7 +44,7 @@ class MakeTwcForm extends Command
 
         $namespaceContext = $this->contextGenerator->classNameByContext(
             Support::FORM,
-            str_replace('Type', '', $name) . 'Type',
+            Str::addSuffix($name, 'Type'),
             $context
         );
         $arguments = [

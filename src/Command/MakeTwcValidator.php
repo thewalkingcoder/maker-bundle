@@ -2,6 +2,7 @@
 
 namespace Twc\MakerBundle\Command;
 
+use Symfony\Bundle\MakerBundle\Str;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
@@ -41,7 +42,7 @@ class MakeTwcValidator extends Command
 
         $namespaceContext = $this->contextGenerator->classNameByContext(
             Support::VALIDATOR,
-            str_replace('Validator', '', $name) . 'Validator',
+            Str::addSuffix($name, 'Validator'),
             $context
         );
 

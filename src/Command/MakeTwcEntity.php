@@ -156,7 +156,7 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
         if (!$classExists) {
             $namespaceRepositoryContext = $this->contextGenerator->classNameByContext(
                 Support::ENTITY,
-                str_replace('Repository', '', $name) . 'Repository',
+                Str::addSuffix($name, 'Repository'),
                 $context,
                 'target_repository'
             );
