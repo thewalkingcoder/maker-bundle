@@ -12,15 +12,19 @@
 namespace Twc\MakerBundle\Doctrine;
 
 use Doctrine\Common\Persistence\ManagerRegistry as LegacyManagerRegistry;
-use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\MakerBundle\Doctrine\DoctrineHelper;
 use Symfony\Bundle\MakerBundle\Generator;
+use Symfony\Bundle\MakerBundle\Str;
 use Symfony\Bundle\MakerBundle\Util\ClassNameDetails;
 
+/**
+ * @internal
+ */
 final class EntityClassGenerator
 {
     private $generator;
     private $doctrineHelper;
+    private $managerRegistryClassName = LegacyManagerRegistry::class;
 
     public function __construct(Generator $generator, DoctrineHelper $doctrineHelper)
     {
@@ -28,12 +32,9 @@ final class EntityClassGenerator
         $this->doctrineHelper = $doctrineHelper;
     }
 
-    public function generateEntityClass(
-        ClassNameDetails $entityClassDetails,
-        ClassNameDetails $repoClassDetails,
-        bool $apiResource,
-        bool $withPasswordUpgrade = false
-    ): string {
+    public function generateEntityClass(ClassNameDetails $entityClassDetails, ClassNameDetails $repoClassDetails, bool $apiResource, bool $withPasswordUpgrade = false, bool $generateRepositoryClass = true): string
+    {
+
         $tableName = $this->doctrineHelper->getPotentialTableName($entityClassDetails->getFullName());
 
         $entityPath = $this->generator->generateClass(
@@ -48,19 +49,41 @@ final class EntityClassGenerator
             ]
         );
 
-        $entityAlias = strtolower($entityClassDetails->getShortName()[0]);
-        $this->generator->generateClass(
-            $repoClassDetails->getFullName(),
-            'doctrine/Repository.tpl.php',
-            [
-                'entity_full_class_name' => $entityClassDetails->getFullName(),
-                'entity_class_name' => $entityClassDetails->getShortName(),
-                'entity_alias' => $entityAlias,
-                'with_password_upgrade' => $withPasswordUpgrade,
-                'doctrine_registry_class' => interface_exists(ManagerRegistry::class) ? ManagerRegistry::class : LegacyManagerRegistry::class,
-            ]
-        );
+        if ($generateRepositoryClass) {
+            $this->generateRepositoryClass(
+                $repoClassDetails->getFullName(),
+                $entityClassDetails->getFullName(),
+                $withPasswordUpgrade,
+                true
+            );
+        }
 
         return $entityPath;
+    }
+
+    public function generateRepositoryClass(string $repositoryClass, string $entityClass, bool $withPasswordUpgrade, bool $includeExampleComments = true)
+    {
+        $shortEntityClass = Str::getShortClassName($entityClass);
+        $entityAlias = strtolower($shortEntityClass[0]);
+        $this->generator->generateClass(
+            $repositoryClass,
+            'doctrine/Repository.tpl.php',
+            [
+                'entity_full_class_name' => $entityClass,
+                'entity_class_name' => $shortEntityClass,
+                'entity_alias' => $entityAlias,
+                'with_password_upgrade' => $withPasswordUpgrade,
+                'doctrine_registry_class' => $this->managerRegistryClassName,
+                'include_example_comments' => $includeExampleComments,
+            ]
+        );
+    }
+
+    /**
+     * Called by a compiler pass to inject the non-legacy value if available.
+     */
+    public function setMangerRegistryClassName(string $managerRegistryClassName)
+    {
+        $this->managerRegistryClassName = $managerRegistryClassName;
     }
 }
