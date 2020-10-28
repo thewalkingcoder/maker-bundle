@@ -50,11 +50,14 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
      */
     private $contextGenerator;
 
+    private $entityClassGenerator;
+
     public function __construct(
         FileManager $fileManager,
         DoctrineHelper $doctrineHelper,
         string $projectDirectory,
         Generator $generator = null,
+        EntityClassGenerator $entityClassGenerator = null,
         ContextGenerator $contextGenerator
     ) {
         $this->fileManager = $fileManager;
@@ -66,6 +69,13 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
             $this->generator = new Generator($fileManager, 'App\\');
         } else {
             $this->generator = $generator;
+        }
+
+        if (null === $entityClassGenerator) {
+            @trigger_error(sprintf('Passing a "%s" instance as 5th argument is mandatory since version 1.15.1', EntityClassGenerator::class), E_USER_DEPRECATED);
+            $this->entityClassGenerator = new EntityClassGenerator($generator, $this->doctrineHelper);
+        } else {
+            $this->entityClassGenerator = $entityClassGenerator;
         }
         $this->contextGenerator = $contextGenerator;
     }

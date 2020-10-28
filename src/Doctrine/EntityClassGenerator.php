@@ -11,7 +11,7 @@
 
 namespace Twc\MakerBundle\Doctrine;
 
-use Doctrine\Common\Persistence\ManagerRegistry as LegacyManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry as LegacyManagerRegistry;
 use Symfony\Bundle\MakerBundle\Doctrine\DoctrineHelper;
 use Symfony\Bundle\MakerBundle\Generator;
 use Symfony\Bundle\MakerBundle\Str;
@@ -63,6 +63,7 @@ final class EntityClassGenerator
 
     public function generateRepositoryClass(string $repositoryClass, string $entityClass, bool $withPasswordUpgrade, bool $includeExampleComments = true)
     {
+
         $shortEntityClass = Str::getShortClassName($entityClass);
         $entityAlias = strtolower($shortEntityClass[0]);
         $this->generator->generateClass(

@@ -53,12 +53,18 @@ services:
         tags:
           - { name: 'console.command', command: 'make:twc:fixtures' }
 
+      Twc\MakerBundle\Doctrine\EntityClassGenerator:
+        arguments:
+          - '@maker.generator'
+          - '@maker.doctrine_helper'
+
       Twc\MakerBundle\Command\MakeTwcEntity:
         arguments:
           - '@maker.file_manager'
           - '@maker.doctrine_helper'
           - '%kernel.project_dir%'
           - '@maker.generator'
+          - '@Twc\MakerBundle\Doctrine\EntityClassGenerator'
           - '@Twc\MakerBundle\ContextGenerator'
         tags:
           - { name: 'maker.command'}
