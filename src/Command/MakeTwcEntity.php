@@ -85,6 +85,11 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
         return 'make:twc:entity';
     }
 
+    public static function getCommandDescription(): string
+    {
+        return 'Creates or updates a Doctrine entity class, and optionally an API Platform resource';
+    }
+
     public function configureCommand(Command $command, InputConfiguration $inputConf)
     {
         $command

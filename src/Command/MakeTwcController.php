@@ -52,6 +52,11 @@ final class MakeTwcController extends AbstractMaker
         return 'make:twc:controller';
     }
 
+    public static function getCommandDescription(): string
+    {
+        return 'Creates a new controller class';
+    }
+
     public function configureCommand(Command $command, InputConfiguration $inputConf)
     {
         $command
