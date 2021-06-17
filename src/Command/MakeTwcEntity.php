@@ -96,6 +96,7 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
             ->setDescription('Creates or updates a Doctrine entity class, and optionally an API Platform resource')
             ->addArgument('name', InputArgument::OPTIONAL, sprintf('Class name of the entity to create or update (e.g. <fg=yellow>%s</>)', Str::asClassName(Str::getRandomTerm())))
             ->addOption('api-resource', 'a', InputOption::VALUE_NONE, 'Mark this class as an API Platform resource (expose a CRUD API for it)')
+            ->addOption('broadcast', 'b', InputOption::VALUE_NONE, 'Add the ability to broadcast entity updates using Symfony UX Turbo?')
             ->addOption('regenerate', null, InputOption::VALUE_NONE, 'Instead of adding new fields, simply generate the methods (e.g. getter/setter) for existing fields')
             ->addOption('overwrite', null, InputOption::VALUE_NONE, 'Overwrite any existing getter/setter methods')
             ->addOption('context', 'c', InputOption::VALUE_OPTIONAL, 'your context config to generate on your target')
@@ -139,6 +140,18 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
 
             $input->setOption('api-resource', $value);
         }
+
+        if (
+            !$input->getOption('broadcast') &&
+            class_exists(Broadcast::class) &&
+            !class_exists($this->generator->createClassNameDetails($value, 'Entity\\')->getFullName())
+        ) {
+            $description = $command->getDefinition()->getOption('broadcast')->getDescription();
+            $question = new ConfirmationQuestion($description, false);
+            $value = $io->askQuestion($question);
+
+            $input->setOption('broadcast', $value);
+        }
     }
 
     public function generate(InputInterface $input, ConsoleStyle $io, Generator $generator)
@@ -180,14 +193,29 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
                 $namespaceRepositoryContext,
                 'Repository\\'
             );
-
+            $broadcast = $input->getOption('broadcast');
             $entityClassGenerator = new EntityClassGenerator($generator, $this->doctrineHelper);
 
             $entityPath = $entityClassGenerator->generateEntityClass(
                 $entityClassDetails,
                 $repoClassDetails,
-                $input->getOption('api-resource')
+                $input->getOption('api-resource'),
+                false,
+                true,
+                $broadcast
             );
+
+            if ($broadcast) {
+                $shortName = $entityClassDetails->getShortName();
+                $generator->generateTemplate(
+                    sprintf('broadcast/%s.stream.html.twig', $shortName),
+                    'doctrine/broadcast_twig_template.tpl.php',
+                    [
+                        'class_name' => Str::asSnakeCase($shortName),
+                        'class_name_plural' => Str::asSnakeCase(Str::singularCamelCaseToPluralCamelCase($shortName)),
+                    ]
+                );
+            }
 
             $generator->writeChanges();
         }
@@ -832,7 +860,7 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
     private function doesEntityUseAnnotationMapping(string $className): bool
     {
         if (!class_exists($className)) {
-            $otherClassMetadatas = $this->doctrineHelper->getMetadata(Str::getNamespace($className) . '\\', true);
+            $otherClassMetadatas = $this->doctrineHelper->getMetadata(Str::getNamespace($className).'\\', true);
 
             // if we have no metadata, we should assume this is the first class being mapped
             if (empty($otherClassMetadatas)) {
@@ -842,9 +870,7 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
             $className = reset($otherClassMetadatas)->getName();
         }
 
-        $driver = $this->doctrineHelper->getMappingDriverForClass($className);
-
-        return $driver instanceof AnnotationDriver;
+        return $this->doctrineHelper->isClassAnnotated($className);
     }
 
     private function getEntityNamespace(): string
