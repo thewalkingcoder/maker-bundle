@@ -13,7 +13,6 @@ namespace Twc\MakerBundle\Command;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\DBAL\Types\Type;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Symfony\Bundle\MakerBundle\ConsoleStyle;
 use Symfony\Bundle\MakerBundle\DependencyBuilder;
 use Symfony\Bundle\MakerBundle\Doctrine\DoctrineHelper;
@@ -65,14 +64,23 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
         // $projectDirectory is unused, argument kept for BC
 
         if (null === $generator) {
-            @trigger_error(sprintf('Passing a "%s" instance as 4th argument is mandatory since version 1.5.', Generator::class), E_USER_DEPRECATED);
+            @trigger_error(
+                sprintf('Passing a "%s" instance as 4th argument is mandatory since version 1.5.', Generator::class),
+                E_USER_DEPRECATED
+            );
             $this->generator = new Generator($fileManager, 'App\\');
         } else {
             $this->generator = $generator;
         }
 
         if (null === $entityClassGenerator) {
-            @trigger_error(sprintf('Passing a "%s" instance as 5th argument is mandatory since version 1.15.1', EntityClassGenerator::class), E_USER_DEPRECATED);
+            @trigger_error(
+                sprintf(
+                    'Passing a "%s" instance as 5th argument is mandatory since version 1.15.1',
+                    EntityClassGenerator::class
+                ),
+                E_USER_DEPRECATED
+            );
             $this->entityClassGenerator = new EntityClassGenerator($generator, $this->doctrineHelper);
         } else {
             $this->entityClassGenerator = $entityClassGenerator;
@@ -94,13 +102,34 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
     {
         $command
             ->setDescription('Creates or updates a Doctrine entity class, and optionally an API Platform resource')
-            ->addArgument('name', InputArgument::OPTIONAL, sprintf('Class name of the entity to create or update (e.g. <fg=yellow>%s</>)', Str::asClassName(Str::getRandomTerm())))
-            ->addOption('api-resource', 'a', InputOption::VALUE_NONE, 'Mark this class as an API Platform resource (expose a CRUD API for it)')
-            ->addOption('broadcast', 'b', InputOption::VALUE_NONE, 'Add the ability to broadcast entity updates using Symfony UX Turbo?')
-            ->addOption('regenerate', null, InputOption::VALUE_NONE, 'Instead of adding new fields, simply generate the methods (e.g. getter/setter) for existing fields')
+            ->addArgument(
+                'name',
+                InputArgument::OPTIONAL,
+                sprintf(
+                    'Class name of the entity to create or update (e.g. <fg=yellow>%s</>)',
+                    Str::asClassName(Str::getRandomTerm())
+                )
+            )
+            ->addOption(
+                'api-resource',
+                'a',
+                InputOption::VALUE_NONE,
+                'Mark this class as an API Platform resource (expose a CRUD API for it)'
+            )
+            ->addOption(
+                'broadcast',
+                'b',
+                InputOption::VALUE_NONE,
+                'Add the ability to broadcast entity updates using Symfony UX Turbo?'
+            )
+            ->addOption(
+                'regenerate',
+                null,
+                InputOption::VALUE_NONE,
+                'Instead of adding new fields, simply generate the methods (e.g. getter/setter) for existing fields'
+            )
             ->addOption('overwrite', null, InputOption::VALUE_NONE, 'Overwrite any existing getter/setter methods')
-            ->addOption('context', 'c', InputOption::VALUE_OPTIONAL, 'your context config to generate on your target')
-        ;
+            ->addOption('context', 'c', InputOption::VALUE_OPTIONAL, 'your context config to generate on your target');
 
         $inputConf->setArgumentAsNonInteractive('name');
     }
@@ -116,7 +145,11 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
                 'This command will generate any missing methods (e.g. getters & setters) for a class or all classes in a namespace.',
                 'To overwrite any existing methods, re-run this command with the --overwrite flag',
             ], null, 'fg=yellow');
-            $classOrNamespace = $io->ask('Enter a class or namespace to regenerate', $this->getEntityNamespace(), [Validator::class, 'notBlank']);
+            $classOrNamespace = $io->ask(
+                'Enter a class or namespace to regenerate',
+                $this->getEntityNamespace(),
+                [Validator::class, 'notBlank']
+            );
 
             $input->setArgument('name', $classOrNamespace);
 
@@ -211,7 +244,7 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
                     sprintf('broadcast/%s.stream.html.twig', $shortName),
                     'doctrine/broadcast_twig_template.tpl.php',
                     [
-                        'class_name' => Str::asSnakeCase($shortName),
+                        'class_name'        => Str::asSnakeCase($shortName),
                         'class_name_plural' => Str::asSnakeCase(Str::singularCamelCaseToPluralCamelCase($shortName)),
                     ]
                 );
@@ -221,7 +254,12 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
         }
 
         if (!$this->doesEntityUseAnnotationMapping($entityClassDetails->getFullName())) {
-            throw new RuntimeCommandException(sprintf('Only annotation mapping is supported by make:entity, but the <info>%s</info> class uses a different format. If you would like this command to generate the properties & getter/setter methods, add your mapping configuration, and then re-run this command with the <info>--regenerate</info> flag.', $entityClassDetails->getFullName()));
+            throw new RuntimeCommandException(
+                sprintf(
+                    'Only annotation mapping is supported by make:entity, but the <info>%s</info> class uses a different format. If you would like this command to generate the properties & getter/setter methods, add your mapping configuration, and then re-run this command with the <info>--regenerate</info> flag.',
+                    $entityClassDetails->getFullName()
+                )
+            );
         }
 
         if ($classExists) {
@@ -281,12 +319,18 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
                             // the new field being added to THIS entity is the inverse
                             $newFieldName = $newField->getInverseProperty();
                             $otherManipulatorFilename = $this->getPathOfClass($newField->getOwningClass());
-                            $otherManipulator = $this->createClassManipulator($otherManipulatorFilename, $io, $overwrite);
+                            $otherManipulator = $this->createClassManipulator(
+                                $otherManipulatorFilename,
+                                $io,
+                                $overwrite
+                            );
 
                             // The *other* class will receive the ManyToOne
                             $otherManipulator->addManyToOneRelation($newField->getOwningRelation());
                             if (!$newField->getMapInverseRelation()) {
-                                throw new \Exception('Somehow a OneToMany relationship is being created, but the inverse side will not be mapped?');
+                                throw new \Exception(
+                                    'Somehow a OneToMany relationship is being created, but the inverse side will not be mapped?'
+                                );
                             }
                             $manipulator->addOneToManyRelation($newField->getInverseRelation());
                         }
@@ -431,10 +475,18 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
             $data['length'] = $io->ask('Field length', 255, [Validator::class, 'validateLength']);
         } elseif ('decimal' === $type) {
             // 10 is the default value given in \Doctrine\DBAL\Schema\Column::$_precision
-            $data['precision'] = $io->ask('Precision (total number of digits stored: 100.00 would be 5)', 10, [Validator::class, 'validatePrecision']);
+            $data['precision'] = $io->ask(
+                'Precision (total number of digits stored: 100.00 would be 5)',
+                10,
+                [Validator::class, 'validatePrecision']
+            );
 
             // 0 is the default value given in \Doctrine\DBAL\Schema\Column::$_scale
-            $data['scale'] = $io->ask('Scale (number of decimals to store: 100.00 would be 2)', 0, [Validator::class, 'validateScale']);
+            $data['scale'] = $io->ask(
+                'Scale (number of decimals to store: 100.00 would be 2)',
+                0,
+                [Validator::class, 'validateScale']
+            );
         }
 
         if ($io->confirm('Can this field be null in the database (nullable)', false)) {
@@ -455,32 +507,32 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
         }
 
         $typesTable = [
-            'main' => [
-                'string' => [],
-                'text' => [],
+            'main'         => [
+                'string'  => [],
+                'text'    => [],
                 'boolean' => [],
                 'integer' => ['smallint', 'bigint'],
-                'float' => [],
+                'float'   => [],
             ],
-            'relation' => [
-                'relation' => 'a ' . $wizard . ' will help you build the relation',
-                EntityRelation::MANY_TO_ONE => [],
-                EntityRelation::ONE_TO_MANY => [],
+            'relation'     => [
+                'relation'                   => 'a '.$wizard.' will help you build the relation',
+                EntityRelation::MANY_TO_ONE  => [],
+                EntityRelation::ONE_TO_MANY  => [],
                 EntityRelation::MANY_TO_MANY => [],
-                EntityRelation::ONE_TO_ONE => [],
+                EntityRelation::ONE_TO_ONE   => [],
             ],
             'array_object' => [
-                'array' => ['simple_array'],
-                'json' => [],
+                'array'  => ['simple_array'],
+                'json'   => [],
                 'object' => [],
                 'binary' => [],
-                'blob' => [],
+                'blob'   => [],
             ],
-            'date_time' => [
-                'datetime' => ['datetime_immutable'],
-                'datetimetz' => ['datetimetz_immutable'],
-                'date' => ['date_immutable'],
-                'time' => ['time_immutable'],
+            'date_time'    => [
+                'datetime'     => ['datetime_immutable'],
+                'datetimetz'   => ['datetimetz_immutable'],
+                'date'         => ['date_immutable'],
+                'time'         => ['time_immutable'],
                 'dateinterval' => [],
             ],
         ];
@@ -493,9 +545,15 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
                 if (\is_string($subTypes) && $subTypes) {
                     $line .= sprintf(' (%s)', $subTypes);
                 } elseif (\is_array($subTypes) && !empty($subTypes)) {
-                    $line .= sprintf(' (or %s)', implode(', ', array_map(function ($subType) {
-                        return sprintf('<comment>%s</comment>', $subType);
-                    }, $subTypes)));
+                    $line .= sprintf(
+                        ' (or %s)',
+                        implode(
+                            ', ',
+                            array_map(function ($subType) {
+                                return sprintf('<comment>%s</comment>', $subType);
+                            }, $subTypes)
+                        )
+                    );
 
                     foreach ($subTypes as $subType) {
                         unset($allTypes[$subType]);
@@ -537,8 +595,12 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
         return $question;
     }
 
-    private function askRelationDetails(ConsoleStyle $io, string $generatedEntityClass, string $type, string $newFieldName)
-    {
+    private function askRelationDetails(
+        ConsoleStyle $io,
+        string $generatedEntityClass,
+        string $type,
+        string $newFieldName
+    ) {
         // ask the targetEntity
         $targetEntityClass = null;
         while (null === $targetEntityClass) {
@@ -550,8 +612,8 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
             // in the Entity namespace versus just checking the full class
             // name to avoid issues with classes like "Directory" that exist
             // in PHP's core.
-            if (class_exists($this->getEntityNamespace() . '\\' . $answeredEntityClass)) {
-                $targetEntityClass = $this->getEntityNamespace() . '\\' . $answeredEntityClass;
+            if (class_exists($this->getEntityNamespace().'\\'.$answeredEntityClass)) {
+                $targetEntityClass = $this->getEntityNamespace().'\\'.$answeredEntityClass;
             } elseif (class_exists($answeredEntityClass)) {
                 $targetEntityClass = $answeredEntityClass;
             } else {
@@ -575,7 +637,9 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
                     // same make:entity run. property_exists() only knows about
                     // properties that *originally* existed on this class.
                     if (property_exists($targetClass, $name)) {
-                        throw new \InvalidArgumentException(sprintf('The "%s" class already has a "%s" property.', $targetClass, $name));
+                        throw new \InvalidArgumentException(
+                            sprintf('The "%s" class already has a "%s" property.', $targetClass, $name)
+                        );
                     }
 
                     return Validator::validateDoctrineFieldName($name, $this->doctrineHelper->getRegistry());
@@ -584,11 +648,13 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
         };
 
         $askIsNullable = function (string $propertyName, string $targetClass) use ($io) {
-            return $io->confirm(sprintf(
-                'Is the <comment>%s</comment>.<comment>%s</comment> property allowed to be null (nullable)?',
-                Str::getShortClassName($targetClass),
-                $propertyName
-            ));
+            return $io->confirm(
+                sprintf(
+                    'Is the <comment>%s</comment>.<comment>%s</comment> property allowed to be null (nullable)?',
+                    Str::getShortClassName($targetClass),
+                    $propertyName
+                )
+            );
         };
 
         $askOrphanRemoval = function (string $owningClass, string $inverseClass) use ($io) {
@@ -613,7 +679,13 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
                 ),
             ]);
 
-            return $io->confirm(sprintf('Do you want to automatically delete orphaned <comment>%s</comment> objects (orphanRemoval)?', $owningClass), false);
+            return $io->confirm(
+                sprintf(
+                    'Do you want to automatically delete orphaned <comment>%s</comment> objects (orphanRemoval)?',
+                    $owningClass
+                ),
+                false
+            );
         };
 
         $askInverseSide = function (EntityRelation $relation) use ($io) {
@@ -626,7 +698,7 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
             // recommend an inverse side, except for OneToOne, where it's inefficient
             $recommendMappingInverse = EntityRelation::ONE_TO_ONE !== $relation->getType();
 
-            $getterMethodName = 'get' . Str::asCamelCase(Str::getShortClassName($relation->getOwningClass()));
+            $getterMethodName = 'get'.Str::asCamelCase(Str::getShortClassName($relation->getOwningClass()));
             if (EntityRelation::ONE_TO_ONE !== $relation->getType()) {
                 // pluralize!
                 $getterMethodName = Str::singularCamelCaseToPluralCamelCase($getterMethodName);
@@ -653,29 +725,37 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
                 );
                 $relation->setOwningProperty($newFieldName);
 
-                $relation->setIsNullable($askIsNullable(
-                    $relation->getOwningProperty(),
-                    $relation->getOwningClass()
-                ));
+                $relation->setIsNullable(
+                    $askIsNullable(
+                        $relation->getOwningProperty(),
+                        $relation->getOwningClass()
+                    )
+                );
 
                 $askInverseSide($relation);
                 if ($relation->getMapInverseRelation()) {
-                    $io->comment(sprintf(
-                        'A new property will also be added to the <comment>%s</comment> class so that you can access the related <comment>%s</comment> objects from it.',
-                        Str::getShortClassName($relation->getInverseClass()),
-                        Str::getShortClassName($relation->getOwningClass())
-                    ));
-                    $relation->setInverseProperty($askFieldName(
-                        $relation->getInverseClass(),
-                        Str::singularCamelCaseToPluralCamelCase(Str::getShortClassName($relation->getOwningClass()))
-                    ));
+                    $io->comment(
+                        sprintf(
+                            'A new property will also be added to the <comment>%s</comment> class so that you can access the related <comment>%s</comment> objects from it.',
+                            Str::getShortClassName($relation->getInverseClass()),
+                            Str::getShortClassName($relation->getOwningClass())
+                        )
+                    );
+                    $relation->setInverseProperty(
+                        $askFieldName(
+                            $relation->getInverseClass(),
+                            Str::singularCamelCaseToPluralCamelCase(Str::getShortClassName($relation->getOwningClass()))
+                        )
+                    );
 
                     // orphan removal only applies if the inverse relation is set
                     if (!$relation->isNullable()) {
-                        $relation->setOrphanRemoval($askOrphanRemoval(
-                            $relation->getOwningClass(),
-                            $relation->getInverseClass()
-                        ));
+                        $relation->setOrphanRemoval(
+                            $askOrphanRemoval(
+                                $relation->getOwningClass(),
+                                $relation->getInverseClass()
+                            )
+                        );
                     }
                 }
 
@@ -689,26 +769,34 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
                 );
                 $relation->setInverseProperty($newFieldName);
 
-                $io->comment(sprintf(
-                    'A new property will also be added to the <comment>%s</comment> class so that you can access and set the related <comment>%s</comment> object from it.',
-                    Str::getShortClassName($relation->getOwningClass()),
-                    Str::getShortClassName($relation->getInverseClass())
-                ));
-                $relation->setOwningProperty($askFieldName(
-                    $relation->getOwningClass(),
-                    Str::asLowerCamelCase(Str::getShortClassName($relation->getInverseClass()))
-                ));
+                $io->comment(
+                    sprintf(
+                        'A new property will also be added to the <comment>%s</comment> class so that you can access and set the related <comment>%s</comment> object from it.',
+                        Str::getShortClassName($relation->getOwningClass()),
+                        Str::getShortClassName($relation->getInverseClass())
+                    )
+                );
+                $relation->setOwningProperty(
+                    $askFieldName(
+                        $relation->getOwningClass(),
+                        Str::asLowerCamelCase(Str::getShortClassName($relation->getInverseClass()))
+                    )
+                );
 
-                $relation->setIsNullable($askIsNullable(
-                    $relation->getOwningProperty(),
-                    $relation->getOwningClass()
-                ));
+                $relation->setIsNullable(
+                    $askIsNullable(
+                        $relation->getOwningProperty(),
+                        $relation->getOwningClass()
+                    )
+                );
 
                 if (!$relation->isNullable()) {
-                    $relation->setOrphanRemoval($askOrphanRemoval(
-                        $relation->getOwningClass(),
-                        $relation->getInverseClass()
-                    ));
+                    $relation->setOrphanRemoval(
+                        $askOrphanRemoval(
+                            $relation->getOwningClass(),
+                            $relation->getInverseClass()
+                        )
+                    );
                 }
 
                 break;
@@ -722,15 +810,19 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
 
                 $askInverseSide($relation);
                 if ($relation->getMapInverseRelation()) {
-                    $io->comment(sprintf(
-                        'A new property will also be added to the <comment>%s</comment> class so that you can access the related <comment>%s</comment> objects from it.',
-                        Str::getShortClassName($relation->getInverseClass()),
-                        Str::getShortClassName($relation->getOwningClass())
-                    ));
-                    $relation->setInverseProperty($askFieldName(
-                        $relation->getInverseClass(),
-                        Str::singularCamelCaseToPluralCamelCase(Str::getShortClassName($relation->getOwningClass()))
-                    ));
+                    $io->comment(
+                        sprintf(
+                            'A new property will also be added to the <comment>%s</comment> class so that you can access the related <comment>%s</comment> objects from it.',
+                            Str::getShortClassName($relation->getInverseClass()),
+                            Str::getShortClassName($relation->getOwningClass())
+                        )
+                    );
+                    $relation->setInverseProperty(
+                        $askFieldName(
+                            $relation->getInverseClass(),
+                            Str::singularCamelCaseToPluralCamelCase(Str::getShortClassName($relation->getOwningClass()))
+                        )
+                    );
                 }
 
                 break;
@@ -742,27 +834,33 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
                 );
                 $relation->setOwningProperty($newFieldName);
 
-                $relation->setIsNullable($askIsNullable(
-                    $relation->getOwningProperty(),
-                    $relation->getOwningClass()
-                ));
+                $relation->setIsNullable(
+                    $askIsNullable(
+                        $relation->getOwningProperty(),
+                        $relation->getOwningClass()
+                    )
+                );
 
                 $askInverseSide($relation);
                 if ($relation->getMapInverseRelation()) {
-                    $io->comment(sprintf(
-                        'A new property will also be added to the <comment>%s</comment> class so that you can access the related <comment>%s</comment> object from it.',
-                        Str::getShortClassName($relation->getInverseClass()),
-                        Str::getShortClassName($relation->getOwningClass())
-                    ));
-                    $relation->setInverseProperty($askFieldName(
-                        $relation->getInverseClass(),
-                        Str::asLowerCamelCase(Str::getShortClassName($relation->getOwningClass()))
-                    ));
+                    $io->comment(
+                        sprintf(
+                            'A new property will also be added to the <comment>%s</comment> class so that you can access the related <comment>%s</comment> object from it.',
+                            Str::getShortClassName($relation->getInverseClass()),
+                            Str::getShortClassName($relation->getOwningClass())
+                        )
+                    );
+                    $relation->setInverseProperty(
+                        $askFieldName(
+                            $relation->getInverseClass(),
+                            Str::asLowerCamelCase(Str::getShortClassName($relation->getOwningClass()))
+                        )
+                    );
                 }
 
                 break;
             default:
-                throw new \InvalidArgumentException('Invalid type: ' . $type);
+                throw new \InvalidArgumentException('Invalid type: '.$type);
         }
 
         return $relation;
@@ -777,22 +875,46 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
         $rows = [];
         $rows[] = [
             EntityRelation::MANY_TO_ONE,
-            sprintf("Each <comment>%s</comment> relates to (has) <info>one</info> <comment>%s</comment>.\nEach <comment>%s</comment> can relate to (can have) <info>many</info> <comment>%s</comment> objects", $originalEntityShort, $targetEntityShort, $targetEntityShort, $originalEntityShort),
+            sprintf(
+                "Each <comment>%s</comment> relates to (has) <info>one</info> <comment>%s</comment>.\nEach <comment>%s</comment> can relate to (can have) <info>many</info> <comment>%s</comment> objects",
+                $originalEntityShort,
+                $targetEntityShort,
+                $targetEntityShort,
+                $originalEntityShort
+            ),
         ];
         $rows[] = ['', ''];
         $rows[] = [
             EntityRelation::ONE_TO_MANY,
-            sprintf("Each <comment>%s</comment> can relate to (can have) <info>many</info> <comment>%s</comment> objects.\nEach <comment>%s</comment> relates to (has) <info>one</info> <comment>%s</comment>", $originalEntityShort, $targetEntityShort, $targetEntityShort, $originalEntityShort),
+            sprintf(
+                "Each <comment>%s</comment> can relate to (can have) <info>many</info> <comment>%s</comment> objects.\nEach <comment>%s</comment> relates to (has) <info>one</info> <comment>%s</comment>",
+                $originalEntityShort,
+                $targetEntityShort,
+                $targetEntityShort,
+                $originalEntityShort
+            ),
         ];
         $rows[] = ['', ''];
         $rows[] = [
             EntityRelation::MANY_TO_MANY,
-            sprintf("Each <comment>%s</comment> can relate to (can have) <info>many</info> <comment>%s</comment> objects.\nEach <comment>%s</comment> can also relate to (can also have) <info>many</info> <comment>%s</comment> objects", $originalEntityShort, $targetEntityShort, $targetEntityShort, $originalEntityShort),
+            sprintf(
+                "Each <comment>%s</comment> can relate to (can have) <info>many</info> <comment>%s</comment> objects.\nEach <comment>%s</comment> can also relate to (can also have) <info>many</info> <comment>%s</comment> objects",
+                $originalEntityShort,
+                $targetEntityShort,
+                $targetEntityShort,
+                $originalEntityShort
+            ),
         ];
         $rows[] = ['', ''];
         $rows[] = [
             EntityRelation::ONE_TO_ONE,
-            sprintf("Each <comment>%s</comment> relates to (has) exactly <info>one</info> <comment>%s</comment>.\nEach <comment>%s</comment> also relates to (has) exactly <info>one</info> <comment>%s</comment>.", $originalEntityShort, $targetEntityShort, $targetEntityShort, $originalEntityShort),
+            sprintf(
+                "Each <comment>%s</comment> relates to (has) exactly <info>one</info> <comment>%s</comment>.\nEach <comment>%s</comment> also relates to (has) exactly <info>one</info> <comment>%s</comment>.",
+                $originalEntityShort,
+                $targetEntityShort,
+                $targetEntityShort,
+                $originalEntityShort
+            ),
         ];
 
         $io->table([
@@ -800,14 +922,18 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
             'Description',
         ], $rows);
 
-        $question = new Question(sprintf(
-            'Relation type? [%s]',
-            implode(', ', EntityRelation::getValidRelationTypes())
-        ));
+        $question = new Question(
+            sprintf(
+                'Relation type? [%s]',
+                implode(', ', EntityRelation::getValidRelationTypes())
+            )
+        );
         $question->setAutocompleterValues(EntityRelation::getValidRelationTypes());
         $question->setValidator(function ($type) {
             if (!\in_array($type, EntityRelation::getValidRelationTypes())) {
-                throw new \InvalidArgumentException(sprintf('Invalid type: use one of: %s', implode(', ', EntityRelation::getValidRelationTypes())));
+                throw new \InvalidArgumentException(
+                    sprintf('Invalid type: use one of: %s', implode(', ', EntityRelation::getValidRelationTypes()))
+                );
             }
 
             return $type;
