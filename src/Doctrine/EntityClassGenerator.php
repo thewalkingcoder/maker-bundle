@@ -11,14 +11,20 @@
 
 namespace Twc\MakerBundle\Doctrine;
 
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ManagerRegistry as LegacyManagerRegistry;
 use Symfony\Bundle\MakerBundle\Doctrine\DoctrineHelper;
 use Symfony\Bundle\MakerBundle\Generator;
 use Symfony\Bundle\MakerBundle\Str;
 use Symfony\Bundle\MakerBundle\Util\ClassNameDetails;
+use Symfony\Bundle\MakerBundle\Util\UseStatementGenerator;
+use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-
+use ApiPlatform\Metadata\ApiResource;
+use Doctrine\ORM\Mapping;
 /**
  * @internal
  */
@@ -39,10 +45,23 @@ final class EntityClassGenerator
 
         $tableName = $this->doctrineHelper->getPotentialTableName($entityClassDetails->getFullName());
 
+        $useStatements = new UseStatementGenerator([
+            $repoClassDetails->getFullName(),
+            [Mapping::class => 'ORM'],
+        ]);
+
+        if ($apiResource) {
+            // @legacy Drop annotation class when annotations are no longer supported.
+            $useStatements->addUseStatement(class_exists(ApiResource::class) ? ApiResource::class : \ApiPlatform\Core\Annotation\ApiResource::class);
+        }
+
+
+
         $entityPath = $this->generator->generateClass(
             $entityClassDetails->getFullName(),
             'doctrine/Entity.tpl.php',
             [
+                'use_statements' => $useStatements,
                 'repository_full_class_name' => $repoClassDetails->getFullName(),
                 'repository_class_name' => $repoClassDetails->getShortName(),
                 'api_resource' => $apiResource,
@@ -79,11 +98,25 @@ final class EntityClassGenerator
 
         $interfaceClassNameDetails = new ClassNameDetails($passwordUserInterfaceName, 'Symfony\Component\Security\Core\User');
 
+        $useStatements = new UseStatementGenerator([
+            $entityClass,
+            ManagerRegistry::class,
+            ServiceEntityRepository::class,
+        ]);
+
+        if ($withPasswordUpgrade) {
+            $useStatements->addUseStatement([
+                $interfaceClassNameDetails->getFullName(),
+                PasswordUpgraderInterface::class,
+                UnsupportedUserException::class,
+            ]);
+        }
 
         $this->generator->generateClass(
             $repositoryClass,
             'doctrine/Repository.tpl.php',
             [
+                'use_statements' => $useStatements,
                 'entity_full_class_name' => $entityClass,
                 'entity_class_name' => $shortEntityClass,
                 'entity_alias' => $entityAlias,

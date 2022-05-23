@@ -12,6 +12,7 @@
 namespace Twc\MakerBundle\Command;
 
 use Doctrine\Common\Annotations\Annotation;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\MakerBundle\ConsoleStyle;
 use Symfony\Bundle\MakerBundle\DependencyBuilder;
 use Symfony\Bundle\MakerBundle\FileManager;
@@ -19,11 +20,15 @@ use Symfony\Bundle\MakerBundle\Generator;
 use Symfony\Bundle\MakerBundle\InputConfiguration;
 use Symfony\Bundle\MakerBundle\Maker\AbstractMaker;
 use Symfony\Bundle\MakerBundle\Str;
+use Symfony\Bundle\MakerBundle\Util\UseStatementGenerator;
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 use Twc\MakerBundle\ContextGenerator;
 use Twc\MakerBundle\Support;
 
@@ -94,10 +99,18 @@ final class MakeTwcController extends AbstractMaker
         $templateName = $dirTemplate . '/index.html.twig';
         $templateExist = file_exists($this->fileManager->getPathForTemplate($templateName));
 
+        $withTemplate = $this->isTwigInstalled() && !$input->getOption('no-template');
+        $useStatements = new UseStatementGenerator([
+            AbstractController::class,
+            $withTemplate ? Response::class : JsonResponse::class,
+            Route::class,
+        ]);
+
         $controllerPath = $generator->generateController(
             $controllerClassNameDetails->getFullName(),
             'controller/Controller.tpl.php',
             [
+                'use_statements' => $useStatements,
                 'route_path' => Str::asRoutePath($controllerClassNameDetails->getRelativeNameWithoutSuffix()),
                 'route_name' => Str::asRouteName($controllerClassNameDetails->getRelativeNameWithoutSuffix()),
                 'with_template' => $this->isTwigInstalled() && !$noTemplate,
