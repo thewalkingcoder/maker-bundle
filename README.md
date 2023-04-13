@@ -17,7 +17,7 @@ composer require twc/maker-bundle --dev
 ### Generic configuration
 
 ```yaml
-#config/packages/dev/twc_maker.yml
+#config/packages/dev/twc_maker.yaml
 twc_maker:
     componentName:
         - { context: 'contextName', target: 'Your\SpecificNamespace' }
@@ -111,6 +111,23 @@ result
 created: src/Membership/Domain/Entity/UserMemberShip.php
 created: src/Membership/Infrastructure/Doctrine/Repository/UserMemberShipRepository.php
 ```
+## Troubleshooting
+
+### Specific directory not created
+If your specific directory not created, clean cache and retry.
+
+```bash
+php bin/console c:c 
+```
+
+
+### Could not determine where to locate the new class
+If you have error message like 
+
+```bash
+Could not determine where to locate the new class "xxx" maybe try with a full namespace like 
+```
+Check your composer.json with PSR-4 config, maybe you need to add your namespace, or try with ` App\ `
 
 ## Support
 
