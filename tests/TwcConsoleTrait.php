@@ -19,7 +19,7 @@ trait TwcConsoleTrait
         $commandTester->execute($executeOptions, ['interactive' => false]);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $finder = new Finder();
         $finder->files()->name('*.php')->in(__DIR__ . '/Execute');

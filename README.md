@@ -1,6 +1,6 @@
 # TwcMakerBundle
 
-[![Build Status](https://travis-ci.com/thewalkingcoder/maker-bundle.svg?branch=master)](https://travis-ci.com/thewalkingcoder/maker-bundle)
+![build passing](https://github.com/thewalkingcoder/maker-bundle/actions/workflows/php.yml/badge.svg)
 
 When your symfony architecture is different like (ddd, cqrs, adr, custom architecture) you lost the powerfull of makerBundle,
 because directory structure is not at the same place.

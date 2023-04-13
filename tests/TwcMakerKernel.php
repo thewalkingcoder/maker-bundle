@@ -29,7 +29,7 @@ class TwcMakerKernel extends Kernel
         $this->configTwcMaker = $configTwcMaker;
     }
 
-    public function registerBundles()
+    public function registerBundles(): iterable
     {
         return [
             new FrameworkBundle(),
