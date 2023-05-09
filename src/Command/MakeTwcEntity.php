@@ -252,15 +252,16 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
 
             $generator->writeChanges();
         }
-
-        if (!$this->doesEntityUseAnnotationMapping($entityClassDetails->getFullName())) {
+        /** keep compatibility with annotation, attribute
+        if (!$this->doesEntityUseAttributeMapping($entityClassDetails->getFullName())) {
             throw new RuntimeCommandException(
                 sprintf(
-                    'Only annotation mapping is supported by make:entity, but the <info>%s</info> class uses a different format. If you would like this command to generate the properties & getter/setter methods, add your mapping configuration, and then re-run this command with the <info>--regenerate</info> flag.',
+                    'Only attribute mapping is supported by make:entity, but the <info>%s</info> class uses a different format. If you would like this command to generate the properties & getter/setter methods, add your mapping configuration, and then re-run this command with the <info>--regenerate</info> flag.',
                     $entityClassDetails->getFullName()
                 )
             );
         }
+         **/
 
         if ($classExists) {
             $entityPath = $this->getPathOfClass($entityClassDetails->getFullName());
@@ -437,8 +438,6 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
 
         $type = null;
         $types = Type::getTypesMap();
-        // remove deprecated json_array
-        unset($types[Type::JSON_ARRAY]);
 
         $allValidTypes = array_merge(
             array_keys($types),
@@ -983,8 +982,9 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
         }, $reflClass->getProperties());
     }
 
-    private function doesEntityUseAnnotationMapping(string $className): bool
+    private function doesEntityUseAttributeMapping(string $className): bool
     {
+
         if (!class_exists($className)) {
             $otherClassMetadatas = $this->doctrineHelper->getMetadata(Str::getNamespace($className).'\\', true);
 
@@ -996,7 +996,7 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
             $className = reset($otherClassMetadatas)->getName();
         }
 
-        return $this->doctrineHelper->isClassAnnotated($className);
+        return $this->doctrineHelper->doesClassUsesAttributes($className);
     }
 
     private function getEntityNamespace(): string
