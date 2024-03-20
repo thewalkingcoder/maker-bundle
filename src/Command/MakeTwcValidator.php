@@ -25,7 +25,7 @@ class MakeTwcValidator extends Command
         $this->contextGenerator = $contextGenerator;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription('Creates a new validator and constraint class')

@@ -62,7 +62,7 @@ final class MakeTwcController extends AbstractMaker
         return 'Creates a new controller class';
     }
 
-    public function configureCommand(Command $command, InputConfiguration $inputConf)
+    public function configureCommand(Command $command, InputConfiguration $inputConf): void
     {
         $command
             ->setDescription('Creates a new controller class')
@@ -72,7 +72,7 @@ final class MakeTwcController extends AbstractMaker
         ;
     }
 
-    public function generate(InputInterface $input, ConsoleStyle $io, Generator $generator)
+    public function generate(InputInterface $input, ConsoleStyle $io, Generator $generator): void
     {
         $controllerClass = $input->getArgument('controller-class');
         $context = $input->getOption('context');
@@ -136,7 +136,7 @@ final class MakeTwcController extends AbstractMaker
         $io->text('Next: Open your new controller class and add some pages!');
     }
 
-    public function configureDependencies(DependencyBuilder $dependencies)
+    public function configureDependencies(DependencyBuilder $dependencies): void
     {
         $dependencies->addClassDependency(
             Annotation::class,
@@ -144,7 +144,7 @@ final class MakeTwcController extends AbstractMaker
         );
     }
 
-    private function isTwigInstalled()
+    private function isTwigInstalled(): bool
     {
         return class_exists(TwigBundle::class);
     }

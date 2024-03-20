@@ -25,7 +25,7 @@ class MakeTwcFixtures extends Command
         $this->contextGenerator = $contextGenerator;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription('Creates a new class to load Doctrine fixtures')

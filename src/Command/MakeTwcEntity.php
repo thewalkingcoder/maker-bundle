@@ -98,7 +98,7 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
         return 'Creates or updates a Doctrine entity class, and optionally an API Platform resource';
     }
 
-    public function configureCommand(Command $command, InputConfiguration $inputConf)
+    public function configureCommand(Command $command, InputConfiguration $inputConf): void
     {
         $command
             ->setDescription('Creates or updates a Doctrine entity class, and optionally an API Platform resource')
@@ -134,7 +134,7 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
         $inputConf->setArgumentAsNonInteractive('name');
     }
 
-    public function interact(InputInterface $input, ConsoleStyle $io, Command $command)
+    public function interact(InputInterface $input, ConsoleStyle $io, Command $command): void
     {
         if ($input->getArgument('name')) {
             return;
@@ -187,7 +187,7 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
         }
     }
 
-    public function generate(InputInterface $input, ConsoleStyle $io, Generator $generator)
+    public function generate(InputInterface $input, ConsoleStyle $io, Generator $generator): void
     {
         $overwrite = $input->getOption('overwrite');
         // the regenerate option has entirely custom behavior
@@ -380,7 +380,7 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
         ]);
     }
 
-    public function configureDependencies(DependencyBuilder $dependencies, InputInterface $input = null)
+    public function configureDependencies(DependencyBuilder $dependencies, InputInterface $input = null): void
     {
         $dependencies->requirePHP71();
 
@@ -599,7 +599,7 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
         string $generatedEntityClass,
         string $type,
         string $newFieldName
-    ) {
+    ): EntityRelation {
         // ask the targetEntity
         $targetEntityClass = null;
         while (null === $targetEntityClass) {

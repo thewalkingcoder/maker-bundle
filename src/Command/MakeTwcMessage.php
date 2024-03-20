@@ -24,7 +24,7 @@ class MakeTwcMessage extends Command
         $this->contextGenerator = $contextGenerator;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription('Creates a new message and handler')
