@@ -11,11 +11,14 @@
 
 namespace Twc\MakerBundle\Doctrine;
 
+use ApiPlatform\Metadata\ApiResource;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Doctrine\Persistence\ManagerRegistry as LegacyManagerRegistry;
+use Symfony\Bridge\Doctrine\Types\UlidType;
+use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Bundle\MakerBundle\Doctrine\DoctrineHelper;
 use Symfony\Bundle\MakerBundle\Generator;
+use Symfony\Bundle\MakerBundle\Maker\Common\EntityIdTypeEnum;
 use Symfony\Bundle\MakerBundle\Str;
 use Symfony\Bundle\MakerBundle\Util\ClassNameDetails;
 use Symfony\Bundle\MakerBundle\Util\UseStatementGenerator;
@@ -23,59 +26,83 @@ use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use ApiPlatform\Metadata\ApiResource;
-use Doctrine\ORM\Mapping;
+use Symfony\Component\Uid\Ulid;
+use Symfony\Component\Uid\Uuid;
+use Symfony\UX\Turbo\Attribute\Broadcast;
+
 /**
  * @internal
  */
 final class EntityClassGenerator
 {
-    private $generator;
-    private $doctrineHelper;
-    private $managerRegistryClassName = LegacyManagerRegistry::class;
-
-    public function __construct(Generator $generator, DoctrineHelper $doctrineHelper)
-    {
-        $this->generator = $generator;
-        $this->doctrineHelper = $doctrineHelper;
+    public function __construct(
+        private Generator $generator,
+        private DoctrineHelper $doctrineHelper,
+    ) {
     }
 
-    public function generateEntityClass(ClassNameDetails $entityClassDetails, ClassNameDetails $repoClassDetails, bool $apiResource, bool $withPasswordUpgrade = false, bool $generateRepositoryClass = true, bool $broadcast = false): string
+    public function generateEntityClass(ClassNameDetails $entityClassDetails, bool $apiResource, bool $withPasswordUpgrade = false, string $generateRepositoryClass = '', bool $broadcast = false, EntityIdTypeEnum $useUuidIdentifier = EntityIdTypeEnum::INT): string
     {
+        $repoClassDetails = $this->generator->createClassNameDetails(
+            $entityClassDetails->getRelativeName(),
+            'Repository\\',
+            'Repository'
+        );
 
         $tableName = $this->doctrineHelper->getPotentialTableName($entityClassDetails->getFullName());
 
         $useStatements = new UseStatementGenerator([
             $repoClassDetails->getFullName(),
-            [Mapping::class => 'ORM'],
+            ['Doctrine\\ORM\\Mapping' => 'ORM'],
         ]);
 
-        if ($apiResource) {
-            // @legacy Drop annotation class when annotations are no longer supported.
-            $useStatements->addUseStatement(class_exists(ApiResource::class) ? ApiResource::class : \ApiPlatform\Core\Annotation\ApiResource::class);
+        if ($broadcast) {
+            $useStatements->addUseStatement(Broadcast::class);
         }
 
+        if ($apiResource) {
+            $useStatements->addUseStatement(ApiResource::class);
+        }
 
+        if (EntityIdTypeEnum::UUID === $useUuidIdentifier) {
+            $useStatements->addUseStatement([
+                Uuid::class,
+                UuidType::class,
+            ]);
+        }
+
+        if (EntityIdTypeEnum::ULID === $useUuidIdentifier) {
+            $useStatements->addUseStatement([
+                Ulid::class,
+                UlidType::class,
+            ]);
+        }
 
         $entityPath = $this->generator->generateClass(
             $entityClassDetails->getFullName(),
             'doctrine/Entity.tpl.php',
             [
                 'use_statements' => $useStatements,
-                'repository_full_class_name' => $repoClassDetails->getFullName(),
                 'repository_class_name' => $repoClassDetails->getShortName(),
                 'api_resource' => $apiResource,
                 'broadcast' => $broadcast,
                 'should_escape_table_name' => $this->doctrineHelper->isKeyword($tableName),
                 'table_name' => $tableName,
-                'doctrine_use_attributes' => $this->doctrineHelper->isDoctrineSupportingAttributes() && $this->doctrineHelper->doesClassUsesAttributes($entityClassDetails->getFullName()),
+                'id_type' => $useUuidIdentifier,
             ]
         );
 
-        if ($generateRepositoryClass) {
+        if ($generateRepositoryClass === '') {
             $this->generateRepositoryClass(
                 $repoClassDetails->getFullName(),
                 $entityClassDetails->getFullName(),
+                $withPasswordUpgrade,
+                true
+            );
+        }else {
+            $this->generateRepositoryClass(
+                $generateRepositoryClass,
+                $generateRepositoryClass,
                 $withPasswordUpgrade,
                 true
             );
@@ -84,9 +111,8 @@ final class EntityClassGenerator
         return $entityPath;
     }
 
-    public function generateRepositoryClass(string $repositoryClass, string $entityClass, bool $withPasswordUpgrade, bool $includeExampleComments = true)
+    public function generateRepositoryClass(string $repositoryClass, string $entityClass, bool $withPasswordUpgrade, bool $includeExampleComments = true): void
     {
-
         $shortEntityClass = Str::getShortClassName($entityClass);
         $entityAlias = strtolower($shortEntityClass[0]);
 
@@ -99,7 +125,6 @@ final class EntityClassGenerator
         $interfaceClassNameDetails = new ClassNameDetails($passwordUserInterfaceName, 'Symfony\Component\Security\Core\User');
 
         $useStatements = new UseStatementGenerator([
-            $entityClass,
             ManagerRegistry::class,
             ServiceEntityRepository::class,
         ]);
@@ -117,22 +142,12 @@ final class EntityClassGenerator
             'doctrine/Repository.tpl.php',
             [
                 'use_statements' => $useStatements,
-                'entity_full_class_name' => $entityClass,
                 'entity_class_name' => $shortEntityClass,
                 'entity_alias' => $entityAlias,
                 'with_password_upgrade' => $withPasswordUpgrade,
-                'doctrine_registry_class' => $this->managerRegistryClassName,
                 'password_upgrade_user_interface' => $interfaceClassNameDetails,
                 'include_example_comments' => $includeExampleComments,
             ]
         );
-    }
-
-    /**
-     * Called by a compiler pass to inject the non-legacy value if available.
-     */
-    public function setMangerRegistryClassName(string $managerRegistryClassName)
-    {
-        $this->managerRegistryClassName = $managerRegistryClassName;
     }
 }

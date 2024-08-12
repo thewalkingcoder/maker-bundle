@@ -4,21 +4,20 @@
   "type": "symfony-bundle",
   "license": "MIT",
   "require": {
-    "php": "^7.2|^8.0",
-    "symfony/maker-bundle": "^1.0",
-    "doctrine/annotations": "^1.13|^2.0"
+    "php": "^8.0",
+    "symfony/maker-bundle": "^1.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "^7.0|^9.5",
-    "symfony/security-core": "^5.0|^6.0|^7.0",
-    "symfony/filesystem": "^5.0|^6.0|^7.0",
-    "symfony/form": "^5.0|^6.0|^7.0",
-    "symfony/validator": "^5.0|^6.0|^7.0",
-    "symfony/orm-pack": "^1.0|^2.3",
-    "symfony/messenger": "^5.0|^6.0|^7.0",
+    "phpunit/phpunit": "^9.5",
+    "symfony/security-core": "^7.0",
+    "symfony/filesystem": "^7.0",
+    "symfony/form": "^7.0",
+    "symfony/validator": "^7.0",
+    "symfony/orm-pack": "^2.3",
+    "symfony/messenger": "^7.0",
     "doctrine/doctrine-fixtures-bundle": "^3.3",
-    "symfony/finder": "^5.0|^6.0|^7.0",
-    "symfony/yaml": "^5.0|^6.0|^7.0",
+    "symfony/finder": "^7.0",
+    "symfony/yaml": "^7.0",
     "symfony/twig-pack": "^1.0"
   },
   "autoload": {
