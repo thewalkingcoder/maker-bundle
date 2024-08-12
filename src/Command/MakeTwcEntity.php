@@ -55,6 +55,7 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
 
     private Generator $generator;
     private EntityClassGenerator $entityClassGenerator;
+    private ContextGenerator $contextGenerator;
 
     public function __construct(
         private FileManager $fileManager,
@@ -62,8 +63,11 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
         ?string $projectDirectory = null,
         ?Generator $generator = null,
         ?EntityClassGenerator $entityClassGenerator = null,
-        private ContextGenerator $contextGenerator,
+        ContextGenerator $contextGenerator,
+
     ) {
+        $this->contextGenerator = $contextGenerator;
+        
         if (null !== $projectDirectory) {
             @trigger_error('The $projectDirectory constructor argument is no longer used since 1.41.0', \E_USER_DEPRECATED);
         }

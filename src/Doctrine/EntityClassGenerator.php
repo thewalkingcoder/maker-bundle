@@ -52,7 +52,7 @@ final class EntityClassGenerator
         $tableName = $this->doctrineHelper->getPotentialTableName($entityClassDetails->getFullName());
 
         $useStatements = new UseStatementGenerator([
-            $repoClassDetails->getFullName(),
+            $generateRepositoryClass,
             ['Doctrine\\ORM\\Mapping' => 'ORM'],
         ]);
 
@@ -102,7 +102,7 @@ final class EntityClassGenerator
         }else {
             $this->generateRepositoryClass(
                 $generateRepositoryClass,
-                $generateRepositoryClass,
+                $entityClassDetails->getFullName(),
                 $withPasswordUpgrade,
                 true
             );
@@ -113,6 +113,7 @@ final class EntityClassGenerator
 
     public function generateRepositoryClass(string $repositoryClass, string $entityClass, bool $withPasswordUpgrade, bool $includeExampleComments = true): void
     {
+
         $shortEntityClass = Str::getShortClassName($entityClass);
         $entityAlias = strtolower($shortEntityClass[0]);
 
@@ -125,6 +126,7 @@ final class EntityClassGenerator
         $interfaceClassNameDetails = new ClassNameDetails($passwordUserInterfaceName, 'Symfony\Component\Security\Core\User');
 
         $useStatements = new UseStatementGenerator([
+            $entityClass,
             ManagerRegistry::class,
             ServiceEntityRepository::class,
         ]);
