@@ -20,6 +20,7 @@ use Symfony\Bundle\MakerBundle\Generator;
 use Symfony\Bundle\MakerBundle\InputConfiguration;
 use Symfony\Bundle\MakerBundle\Maker\AbstractMaker;
 use Symfony\Bundle\MakerBundle\Str;
+use Symfony\Bundle\MakerBundle\Util\PhpCompatUtil;
 use Symfony\Bundle\MakerBundle\Util\UseStatementGenerator;
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Component\Console\Command\Command;
@@ -34,22 +35,21 @@ use Twc\MakerBundle\Support;
 
 final class MakeTwcController extends AbstractMaker
 {
-    /**
-     * @var ContextGenerator
-     */
-    private $contextGenerator;
 
-    /**
-     * @var FileManager
-     */
-    private $fileManager;
 
     public function __construct(
-        ContextGenerator $contextGenerator,
-        FileManager $fileManager
+        private ContextGenerator $contextGenerator,
+        private FileManager $fileManager,
+        private ?PhpCompatUtil $phpCompatUtil = null,
+
     ) {
-        $this->contextGenerator = $contextGenerator;
-        $this->fileManager = $fileManager;
+        if (null !== $phpCompatUtil) {
+            @trigger_deprecation(
+                'symfony/maker-bundle',
+                '1.55.0',
+                sprintf('Initializing MakeCommand while providing an instance of "%s" is deprecated. The $phpCompatUtil param will be removed in a future version.', PhpCompatUtil::class)
+            );
+        }
     }
 
     public static function getCommandName(): string
@@ -68,6 +68,7 @@ final class MakeTwcController extends AbstractMaker
             ->setDescription('Creates a new controller class')
             ->addArgument('controller-class', InputArgument::OPTIONAL, sprintf('Choose a name for your controller class (e.g. <fg=yellow>%sController</>)', Str::asClassName(Str::getRandomTerm())))
             ->addOption('no-template', null, InputOption::VALUE_NONE, 'Use this option to disable template generation')
+            ->addOption('invokable', 'i', InputOption::VALUE_NONE, 'Use this option to create an invokable controller')
             ->addOption('context', 'c', InputOption::VALUE_OPTIONAL, 'your context config to generate on your target')
         ;
     }
@@ -90,6 +91,8 @@ final class MakeTwcController extends AbstractMaker
         );
 
         $noTemplate = $input->getOption('no-template');
+        $isInvokable = (bool) $input->getOption('invokable');
+
         $dirDefault = Str::asFilePath($controllerClassNameDetails->getRelativeNameWithoutSuffix());
 
         $dirTemplate = $this->contextGenerator->getDirTemplateByContext(
@@ -113,12 +116,13 @@ final class MakeTwcController extends AbstractMaker
                 'use_statements' => $useStatements,
                 'route_path' => Str::asRoutePath($controllerClassNameDetails->getRelativeNameWithoutSuffix()),
                 'route_name' => Str::asRouteName($controllerClassNameDetails->getRelativeNameWithoutSuffix()),
-                'with_template' => $this->isTwigInstalled() && !$noTemplate,
+                'with_template' => $withTemplate,
+                'method_name' => $isInvokable ? '__invoke' : 'index',
                 'template_name' => $templateName,
             ]
         );
 
-        if ($this->isTwigInstalled() && !$noTemplate && !$templateExist) {
+        if ($withTemplate) {
             $generator->generateTemplate(
                 $templateName,
                 'controller/twig_template.tpl.php',
@@ -138,10 +142,6 @@ final class MakeTwcController extends AbstractMaker
 
     public function configureDependencies(DependencyBuilder $dependencies): void
     {
-        $dependencies->addClassDependency(
-            Annotation::class,
-            'doctrine/annotations'
-        );
     }
 
     private function isTwigInstalled(): bool
