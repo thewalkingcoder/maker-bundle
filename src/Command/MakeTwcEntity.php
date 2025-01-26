@@ -60,11 +60,10 @@ final class MakeTwcEntity extends AbstractMaker implements InputAwareMakerInterf
     public function __construct(
         private FileManager $fileManager,
         private DoctrineHelper $doctrineHelper,
+        ContextGenerator $contextGenerator,
         ?string $projectDirectory = null,
         ?Generator $generator = null,
         ?EntityClassGenerator $entityClassGenerator = null,
-        ContextGenerator $contextGenerator,
-
     ) {
         $this->contextGenerator = $contextGenerator;
         

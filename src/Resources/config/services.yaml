@@ -7,7 +7,6 @@ services:
       Twc\MakerBundle\Command\MakeTwcController:
         arguments:
           - '@Twc\MakerBundle\ContextGenerator'
-          - '@maker.file_manager'
         tags:
           - { name: 'maker.command'}
 
@@ -62,9 +61,9 @@ services:
         arguments:
           - '@maker.file_manager'
           - '@maker.doctrine_helper'
+          - '@Twc\MakerBundle\ContextGenerator'
           - '%kernel.project_dir%'
           - '@maker.generator'
           - '@Twc\MakerBundle\Doctrine\EntityClassGenerator'
-          - '@Twc\MakerBundle\ContextGenerator'
         tags:
           - { name: 'maker.command'}
