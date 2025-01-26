@@ -120,9 +120,10 @@ final class MakeTwcController extends AbstractMaker
         // so we don't end up with templates/app/my/controller.html.twig
         $templateName = $this->controllerClassData->getFullClassName(withoutRootNamespace: true, withoutSuffix: true);
 
-        $dir = $this->contextGenerator->getDirTemplateByContext('template', $context);
+
+        $path = str_replace('controller/','',Str::asFilePath($templateName));
         // Convert the twig template name into a file path where it will be generated.
-        $this->twigTemplatePath = \sprintf('%s%s', $dir, $this->isInvokable ? '.html.twig' : '/index.html.twig');
+        $this->twigTemplatePath = \sprintf('%s%s', $path, $this->isInvokable ? '.html.twig' : '/index.html.twig');
 
         $this->interactSetGenerateTests($input, $io);
     }
